@@ -1,0 +1,45 @@
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Ensures padding doesn't affect total width */
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+/* Style for multi-select (Tech Stack) */
+.form-group select[multiple] {
+    height: auto;
+    min-height: 100px; /* Adjust as needed */
+}
+
+/* Hide the placeholder for selects */
+.form-group select option[value=""][disabled] {
+    display: none;
+}
