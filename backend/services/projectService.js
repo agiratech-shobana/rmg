@@ -54,7 +54,7 @@
 
 
 // backend/services/projectService.js
-const { fetchAll, postData } = require('../utils/apiClient');
+const { fetchAll, fetchData,postData } = require('../utils/apiClient');
 
 async function fetchProjects() {
   const rawProjects = await fetchAll("projects.json");
@@ -95,10 +95,7 @@ async function fetchProjects() {
 }
 
 
-// async function createProject(projectData) {
-//     const response = await postData("projects.json", projectData);
-//     return response;
-// }
+
 
 
 
@@ -123,8 +120,43 @@ async function createProjectWithMembers(payload) {
     }
 }
 
+
+
+async function fetchProjectById(projectId) {
+  return await fetchData(`projects/${projectId}.json`);
+}
+
+// Fetches all members (memberships) for a specific project
+async function fetchProjectMembers(projectId) {
+  return await fetchAll(`projects/${projectId}/memberships.json`);
+}
+
+// Adds a new member to a project
+async function addMemberToProject(projectId, memberData) {
+  const payload = { membership: memberData };
+  return await postData(`projects/${projectId}/memberships.json`, payload);
+}
+
+// Fetches all users to populate the 'Add Member' modal
+async function fetchAllUsers() {
+    return await fetchAll('users.json');
+}
+
+// Fetches all roles to populate the 'Add Member' modal
+async function fetchAllRoles() {
+    return await fetchAll('roles.json');
+}
+
 module.exports = {
   fetchProjects,
   // createProject,
   createProjectWithMembers,
+  fetchProjectById,
+  fetchProjectMembers,
+  addMemberToProject,
+  fetchAllUsers,
+  fetchAllRoles,
+
+
 };
+

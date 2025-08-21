@@ -19,6 +19,21 @@
 // export default db;
 
 
+//const mysql = require("mysql2/promise");
+
+// Create a connection pool (recommended for multiple queries/connections)
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",       // change if needed
+//   password: "Root@1234", // your password
+//   database: "rmg",    // change to your DB name
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
+
+// module.exports = pool;
+
 
 
 

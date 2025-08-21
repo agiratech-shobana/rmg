@@ -1,13 +1,3 @@
-// const express = require('express');
-// const { getCachedUsers } = require('../services/aprojectService');
-
-// const router = express.Router();
-
-// router.get('/users', (req, res) => {
-//   res.json(getCachedUsers());
-// });
-
-// module.exports = router;
 
 
 const express = require('express');

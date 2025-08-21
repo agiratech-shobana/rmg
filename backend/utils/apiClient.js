@@ -178,50 +178,98 @@ const AUTH_HEADERS = {
   'Content-Type': 'application/json'
 };
 
+// edha kudutha varum details members matum varadhu
+
+
+
+// async function fetchAll(endpoint) {
+//   let allData = [];
+//   let offset = 0;
+//   const limit = 100;
+
+//   try {
+//     while (true) {
+//       const url = `${APROJECT_BASE_URL}/${endpoint}?limit=${limit}&offset=${offset}`;
+//       console.log("📡 Fetching:", url);
+      
+//       const res = await fetch(url, { headers: AUTH_HEADERS });
+//       const responseBody = await res.text();
+
+//       if (!res.ok) {
+//         console.error(`❌ API Error for ${endpoint}: ${res.status} ${res.statusText}`);
+//         throw new Error(`API fetch failed with status ${res.status}: ${responseBody}`);
+//       }
+
+//       let json;
+//       try {
+//         json = JSON.parse(responseBody);
+//       } catch (jsonError) {
+//         console.error(`❌ JSON parsing failed for ${endpoint}:`, jsonError.message);
+//         console.error("Response body:", responseBody);
+//         throw new Error(`Invalid JSON response from API for endpoint ${endpoint}`);
+//       }
+
+//       let items;
+//       if (json.time_entries) {
+//         items = Array.isArray(json.time_entries) ? json.time_entries : [];
+//       } else if (json.users) {
+//         items = Array.isArray(json.users) ? json.users : [];
+//       } else if (json.projects) {
+//         items = Array.isArray(json.projects) ? json.projects : [];
+//       }  else if (json.roles) { // <-- This is the key line
+//         items = Array.isArray(json.roles) ? json.roles : [];
+//       }
+//       else {
+//         items = Array.isArray(json) ? json : [];
+//       }
+
+//       allData = allData.concat(items);
+
+//       if (items.length < limit || allData.length >= json.total_count) {
+//         break;
+//       }
+//       offset += limit;
+//     }
+//   } catch (error) {
+//     console.error(`❌ FetchAll failed for endpoint ${endpoint}:`, error.message);
+//     throw error;
+//   }
+
+//   return allData;
+// }
+
+
 async function fetchAll(endpoint) {
   let allData = [];
   let offset = 0;
   const limit = 100;
-
   try {
     while (true) {
       const url = `${APROJECT_BASE_URL}/${endpoint}?limit=${limit}&offset=${offset}`;
-      console.log("📡 Fetching:", url);
-      
       const res = await fetch(url, { headers: AUTH_HEADERS });
-      const responseBody = await res.text();
+      if (!res.ok) throw new Error(`API fetch failed with status ${res.status}`);
+      
+      const json = await res.json();
+      
+      // --- THIS IS THE CORRECTED LOGIC ---
+      // It dynamically finds the key in the response that contains the array of data.
+      const dataKey = Object.keys(json).find(key => Array.isArray(json[key]));
 
-      if (!res.ok) {
-        console.error(`❌ API Error for ${endpoint}: ${res.status} ${res.statusText}`);
-        throw new Error(`API fetch failed with status ${res.status}: ${responseBody}`);
+      if (!dataKey) {
+        // This handles cases where the entire response is an array
+        if (Array.isArray(json)) {
+            allData = allData.concat(json);
+            break; 
+        }
+        console.error(`[apiClient ERROR] Could not find a data array (e.g., 'memberships', 'projects') in the JSON response for endpoint: ${endpoint}`);
+        break; // Exit loop if no data array is found
       }
-
-      let json;
-      try {
-        json = JSON.parse(responseBody);
-      } catch (jsonError) {
-        console.error(`❌ JSON parsing failed for ${endpoint}:`, jsonError.message);
-        console.error("Response body:", responseBody);
-        throw new Error(`Invalid JSON response from API for endpoint ${endpoint}`);
-      }
-
-      let items;
-      if (json.time_entries) {
-        items = Array.isArray(json.time_entries) ? json.time_entries : [];
-      } else if (json.users) {
-        items = Array.isArray(json.users) ? json.users : [];
-      } else if (json.projects) {
-        items = Array.isArray(json.projects) ? json.projects : [];
-      }  else if (json.roles) { // <-- This is the key line
-        items = Array.isArray(json.roles) ? json.roles : [];
-      }
-      else {
-        items = Array.isArray(json) ? json : [];
-      }
-
+      
+      const items = json[dataKey];
       allData = allData.concat(items);
 
-      if (items.length < limit || allData.length >= json.total_count) {
+      // Check if we need to fetch another page
+      if (items.length < limit || (json.total_count && allData.length >= json.total_count)) {
         break;
       }
       offset += limit;
@@ -230,9 +278,10 @@ async function fetchAll(endpoint) {
     console.error(`❌ FetchAll failed for endpoint ${endpoint}:`, error.message);
     throw error;
   }
-
+  
   return allData;
 }
+
 
 
 async function postData(endpoint, data) {
@@ -266,9 +315,40 @@ async function postData(endpoint, data) {
 }
 
 
+// async function fetchData(endpoint) {
+//     try {
+//         const url = `${APROJECT_BASE_URL}/${endpoint}`;
+//         const res = await fetch(url, { headers: AUTH_HEADERS });
+//         if (!res.ok) {
+//             throw new Error(`API fetch failed with status ${res.status}`);
+//         }
+//         return await res.json();
+//     } catch (error) {
+//         console.error(`❌ fetchData failed for endpoint ${endpoint}:`, error.message);
+//         throw error;
+//     }
+// }
+
+async function fetchData(endpoint) {
+    try {
+        const url = `${APROJECT_BASE_URL}/${endpoint}`;
+        console.log("📡 Fetching single item:", url);
+        const res = await fetch(url, { headers: AUTH_HEADERS });
+        if (!res.ok) {
+            const errorBody = await res.text();
+            throw new Error(`API fetch failed with status ${res.status}: ${errorBody}`);
+        }
+        return await res.json();
+    } catch (error) {
+        console.error(`❌ fetchData failed for endpoint ${endpoint}:`, error.message);
+        throw error;
+    }
+}
+
 module.exports = {
   fetchAll,
-  postData
+  postData,
+  fetchData
 };
 
 
