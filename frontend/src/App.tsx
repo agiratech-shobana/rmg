@@ -5,7 +5,9 @@ import Dashboard from "./pages/Dashboard";
 import Layout from "./components/Layout";
 import Employee from "./pages/Employee";
 import ProjectDashboard from "./components/ProjectDashboard";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 // import Sidebar from './components/Sidebar';
+
 // import Header from './components/Header';
 
 // function App() {
@@ -33,6 +35,8 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/employee" element={<Layout><Employee/></Layout>} />
+        <Route path="/projects/:id" element={<Layout><ProjectDetailPage /></Layout>} />
+
 
 <Route path="/projects" element={<Layout><ProjectDashboard /></Layout>} />
       </Routes>

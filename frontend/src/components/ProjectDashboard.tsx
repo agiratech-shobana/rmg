@@ -524,20 +524,20 @@ import axios from 'axios';
 import ProjectCard from './ProjectCard';
 import AddProjectModal from './AppProjectModal';
 import AddMembersModal from './AddMembersModal';
-
-interface Project {
-  id: number;
-  name: string;
-  accountName: string;
-  status: string;
-  progress: number;
-  loggedHours: number;
-  totalHours: number;
-  endDate: string;
-}
+import type { ProjectSummary } from '../types/project'; // Adjust the import based on your project structure
+// interface Project {
+//   id: number;
+//   name: string;
+//   accountName: string;
+//   status: string;
+//   progress: number;
+//   loggedHours: number;
+//   totalHours: number;
+//   endDate: string;
+// }
 
 const ProjectDashboard: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);

@@ -1,7 +1,9 @@
 // frontend/src/components/ProjectCard.tsx
 import React from 'react';
 import { Card, CardContent, Typography, LinearProgress, Grid, Chip } from '@mui/material';
+import {Link} from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import type { ProjectSummary } from '../types/project';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   minWidth: 300,
@@ -15,15 +17,16 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 interface ProjectCardProps {
-  project: {
-    name: string;
-    accountName: string;
-    status: string;
-    progress: number;
-    loggedHours: number;
-    totalHours: number;
-    endDate: string;
-  };
+  // project: {
+  //   name: string;
+  //   accountName: string;
+  //   status: string;
+  //   progress: number;
+  //   loggedHours: number;
+  //   totalHours: number;
+  //   endDate: string;
+  // };
+  project: ProjectSummary
 }
 
 const getStatusColor = (status: string) => {
@@ -39,6 +42,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const statusColor = getStatusColor(project.status);
   
   return (
+        <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none' }}>
+
     <StyledCard>
       <CardContent>
         <Grid container justifyContent="space-between" alignItems="center">
@@ -72,6 +77,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </Grid>
       </CardContent>
     </StyledCard>
+        </Link>
+
   );
 };
 
