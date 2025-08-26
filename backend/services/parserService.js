@@ -23,6 +23,8 @@ async function extractText(file) {
   }
 }
 
+
+
 async function parseSkills(skillsText) {
   try {
     const skillsCompletion = await groq.chat.completions.create({
