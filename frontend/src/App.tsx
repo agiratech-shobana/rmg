@@ -1,46 +1,68 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-// import React, { useState } from 'react';
-import Layout from "./components/Layout";
-import Employee from "./pages/Employee";
-import ProjectDashboard from "./components/ProjectDashboard";
-import ProjectDetailPage from "./pages/ProjectDetailPage";
-// import Sidebar from './components/Sidebar';
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import Home from "./pages/Home";
+// import Dashboard from "./pages/Dashboard";
+// // import React, { useState } from 'react';
+// import Layout from "./components/Layout";
+// import Employee from "./pages/Employee";
+// import ProjectDashboard from "./components/ProjectDashboard";
+// import ProjectDetailPage from "./pages/ProjectDetailPage";
 
-// import Header from './components/Header';
 
-// function App() {
+// const App: React.FC = () => {
 //   return (
 //     <Router>
 //       <Routes>
 //         <Route path="/" element={<Home />} />
-//         <Route path="/dashboard" element={<Dashboard />} />
+//         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+//         <Route path="/employee" element={<Layout><Employee/></Layout>} />
+//         <Route path="/projects/:id" element={<Layout><ProjectDetailPage /></Layout>} />
+
+
+// <Route path="/projects" element={<Layout><ProjectDashboard /></Layout>} />
 //       </Routes>
 //     </Router>
 //   );
-// }
+// };
 
-// /
-// import React from "react";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Layout from "./components/Layout";
-// import Home from "./pages/Home";
-// import Dashboard from "./pages/Dashboard";
+// export default App;
+
+
+// src/App.tsx
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";      // <-- IMPORT
+import ProtectedRoute from "./components/ProtectedRoute"; // <-- IMPORT
+
+// Your Page Components
+import Home from "./pages/Home";  
+import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout";
+import Employee from "./pages/Employee";
+import ProjectDashboard from "./components/ProjectDashboard";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-        <Route path="/employee" element={<Layout><Employee/></Layout>} />
-        <Route path="/projects/:id" element={<Layout><ProjectDetailPage /></Layout>} />
+    // Wrap the entire application in AuthProvider
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* ============== PUBLIC ROUTE ============== */}
+          {/* Anyone can visit the login page */}
+          <Route path="/" element={<Home />} />
 
+          {/* ============== PROTECTED ROUTES ============== */}
+          {/* Only logged-in users can visit these pages */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/employee" element={<Layout><Employee /></Layout>} />
+            <Route path="/projects/:id" element={<Layout><ProjectDetailPage /></Layout>} />
+            <Route path="/projects" element={<Layout><ProjectDashboard /></Layout>} />
+          </Route>
 
-<Route path="/projects" element={<Layout><ProjectDashboard /></Layout>} />
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 

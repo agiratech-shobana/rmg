@@ -1,22 +1,28 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Box, CircularProgress, Alert } from '@mui/material';
+import { Container, Box, CircularProgress, Alert,Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 
 import type { ProjectDetails, Membership } from '../types/project';
 import ProjectHeader from '../components/ProjectHeader';
 import MemberList from '../components/MemberList';
+import AddMemberToProjectModal from '../components/AddMemberToProjectModal';
 // Other imports are already in the ProjectDashboard file
 
 const ProjectDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+
     const [project, setProject] = useState<ProjectDetails | null>(null);
     const [memberships, setMemberships] = useState<Membership[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+        const [isModalOpen, setIsModalOpen] = useState(false);
+
     
 
     useEffect(() => {
@@ -64,14 +70,45 @@ const ProjectDetailPage: React.FC = () => {
         return { projectOwner: owner, projectManager: manager, teamMembers: remainingMembers };
     }, [memberships]);
 
+
+     const handleMembersAdded = (newlyAddedMemberships: Membership[]) => {
+        // Add the new members to our list to update the UI instantly
+        setMemberships(prev => [...prev, ...newlyAddedMemberships]);
+        // Close the modal
+        setIsModalOpen(false);
+    };
+
+
+
+    const handleMemberDeleted = (deletedMembershipId: number) => {
+        setMemberships(prevMemberships => prevMemberships.filter(m => m.id !== deletedMembershipId));
+    };
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center' }}><CircularProgress /></Box>;
     if (error) return <Alert severity="error">{error}</Alert>;
     if (!project) return null;
 
     return (
         <Container maxWidth="lg">
+                 {/* --- 4. ADD THE BUTTON TO THE UI --- */}
+            <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => navigate(-1)} // This takes the user to the previous page
+                sx={{ mb: 3 }} // Adds some margin at the bottom
+            >
+                Back to Dashboard
+            </Button>
             <ProjectHeader project={project} owner={projectOwner} manager={projectManager} />
-            <MemberList members={teamMembers} onAddMemberClick={() => { /* TODO */ }} />
+            {/* <MemberList members={teamMembers} onAddMemberClick={() => setIsModalOpen(true)} /> */}
+            <MemberList members={teamMembers} onAddMemberClick={() => setIsModalOpen(true)}     projectId={Number(id)}   onMemberDeleted={handleMemberDeleted}/>
+
+                <AddMemberToProjectModal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                projectId={Number(id)}
+                currentMembers={memberships}
+                onMembersAdded={handleMembersAdded}
+            />
         </Container>
     );
 };

@@ -37,6 +37,7 @@ export interface ProjectDetails {
 export interface ProjectSummary {
   id: number;
   name: string;
+  identifier: string;
   accountName: string;
   status: string;
   progress: number;

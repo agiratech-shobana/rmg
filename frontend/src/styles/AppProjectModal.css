@@ -43,3 +43,19 @@
 .form-group select option[value=""][disabled] {
     display: none;
 }
+
+/* ... (your existing styles) ... */
+
+.form-group label.required-label::after {
+  content: " *";
+  color: red;
+}
+
+/* ... (your existing styles) ... */
+
+.error-message {
+  color: #d32f2f; /* A standard Material UI error red color */
+  font-size: 0.75rem;
+  margin-top: 4px;
+  display: block; /* Ensures it appears on its own line */
+}
