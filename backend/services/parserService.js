@@ -7,7 +7,7 @@ dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-async function extractText(file) {
+async function extractText(file) {  
   if (file.mimetype === "application/pdf") {
     const pdfData = await pdfParse(file.buffer);
     return pdfData.text;
