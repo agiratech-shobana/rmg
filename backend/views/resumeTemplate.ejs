@@ -59,14 +59,17 @@
   </style>
 </head>
 <body>
-  <!-- <div class="container">
-    <div class="header">
-      <img src="<%= logoUrl %>" alt="Company Logo"> -->
+
       <div class="header-info">
-        <h1 style="text-align: center;"><%= name || "Candidate Name" %></h1>
-        <p><%= designation || "" %></p>
+        <!-- <h1 style="text-align: center;"><%= name || "Candidate Name" %></h1>
+        <p><%= designation || "" %></p> -->
+        <h1 style="color: #0056b3; font-size: 2em; margin: 0; padding-top: 20px;">
+            <%= name || "Candidate Name" %>
+        </h1>
+        <p style="color: #555; font-weight: bold; font-size: 1.2em; margin: 0;">
+            <%= designation || "" %>
+        </p>
       </div>
-    <!-- </div> -->
 
     <div class="section">
       <h2>Summary / Career Objective</h2>

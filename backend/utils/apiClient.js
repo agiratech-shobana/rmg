@@ -22,7 +22,6 @@ const AUTH_HEADERS = {
 };
 
 
-
 async function fetchAll(endpoint) {
   let allData = [];
   let offset = 0;
@@ -34,11 +33,8 @@ async function fetchAll(endpoint) {
       if (!res.ok) throw new Error(`API fetch failed with status ${res.status}`);
       
       const json = await res.json();
-      
-      // --- THIS IS THE CORRECTED LOGIC ---
       // It dynamically finds the key in the response that contains the array of data.
       const dataKey = Object.keys(json).find(key => Array.isArray(json[key]));
-
       if (!dataKey) {
         // This handles cases where the entire response is an array
         if (Array.isArray(json)) {
@@ -59,7 +55,7 @@ async function fetchAll(endpoint) {
       offset += limit;
     }
   } catch (error) {
-    console.error(`❌ FetchAll failed for endpoint ${endpoint}:`, error.message);
+    console.error(` FetchAll failed for endpoint ${endpoint}:`, error.message);
     throw error;
   }
   
@@ -99,19 +95,6 @@ async function postData(endpoint, data) {
 }
 
 
-// async function fetchData(endpoint) {
-//     try {
-//         const url = `${APROJECT_BASE_URL}/${endpoint}`;
-//         const res = await fetch(url, { headers: AUTH_HEADERS });
-//         if (!res.ok) {
-//             throw new Error(`API fetch failed with status ${res.status}`);
-//         }
-//         return await res.json();
-//     } catch (error) {
-//         console.error(` fetchData failed for endpoint ${endpoint}:`, error.message);
-//         throw error;
-//     }
-// }
 
 async function fetchData(endpoint) {
     try {
@@ -124,10 +107,10 @@ async function fetchData(endpoint) {
         }
         return await res.json();
     } catch (error) {
-        console.error(`❌ fetchData failed for endpoint ${endpoint}:`, error.message);
+        console.error(` fetchData failed for endpoint ${endpoint}:`, error.message);
         throw error;
     }
-}
+} 
 
 async function deleteData(endpoint) {
     try {
@@ -153,26 +136,75 @@ async function deleteData(endpoint) {
     }
 }
 
-// In backend/utils/apiClient.js
 
-// ... (your existing functions) ...
+
 
 async function fetchTimeEntries(projectId) {
     const endpoint = `time_entries.json?project_id=${projectId}&limit=100`; // Adjust limit as needed
     const timeEntries = await fetchAll(endpoint);
     return timeEntries;
 }
-// In backend/utils/apiClient.js
-
-// ... (your existing functions) ...
 
 async function fetchTimeEntriesByUser(userId) {
     const endpoint = `time_entries.json?user_id=${userId}&limit=100`; // Use user_id
     const timeEntries = await fetchAll(endpoint);
     return timeEntries;
 }
+async function fetchTimeEntriesByDate(projectId, date) {
+    const endpoint = `time_entries.json?project_id=${projectId}&spent_on=${date}`;
+    const timeEntries = await fetchAll(endpoint);
+    return timeEntries;
+}
 
 
+async function fetchProjectDeadlines() {
+    const rawProjects = await fetchAll("projects.json");
+    const deadlines = rawProjects
+        .map(project => {
+            const endDateField = project.custom_fields.find(cf => cf.name === 'End Date');
+            if (endDateField && endDateField.value) {
+                return {
+                    id: project.id,
+                    title: project.name,
+                    date: endDateField.value,
+                };
+            }
+            return null;
+        })
+        .filter(item => item !== null);
+    return deadlines;
+}
+
+
+
+
+async function putData(endpoint, data) {
+    try {
+        const url = `${APROJECT_BASE_URL}/${endpoint}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: AUTH_HEADERS,
+            body: JSON.stringify(data),
+        });
+
+        // --- CHECK FOR 204 NO CONTENT ---
+        if (res.status === 204) {
+            console.log(` PUT successful, but no content returned for endpoint ${endpoint}`);
+            return null; // Return null for a successful but empty response
+        }
+
+        if (!res.ok) {
+            const errorBody = await res.text();
+            throw new Error(`API PUT failed with status ${res.status}: ${errorBody}`);
+        }
+        
+        // Only try to parse JSON if a body is expected
+        return await res.json();
+    } catch (error) {
+        console.error(` putData failed for endpoint ${endpoint}:`, error.message);
+        throw error;
+    }
+}
 
 module.exports = {
   fetchAll,
@@ -180,7 +212,10 @@ module.exports = {
   fetchData,
   deleteData,
   fetchTimeEntries,
-  fetchTimeEntriesByUser
+  fetchTimeEntriesByUser,
+  fetchTimeEntriesByDate,
+  fetchProjectDeadlines,
+    putData
 };
 
 

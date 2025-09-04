@@ -1,18 +1,43 @@
 
 
-import React, { useState } from 'react';
+// frontend/src/components/AppProjectModal.tsx
+import React, { useState, useEffect } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Box, CircularProgress, Alert
 } from '@mui/material';
+import axios from 'axios';
 import '../styles/AppProjectModal.css';
+import type { ProjectSummary, ProjectDetails } from '../types/project';
+
+// Helper function to get custom field value by name
+// const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
+//   return project.custom_fields.find(cf => cf.name === fieldName)?.value || '';
+// };
+
+// This new helper is case-insensitive and returns the raw value from the API
+const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
+  const field = project.custom_fields.find(
+    cf => cf.name.toLowerCase() === fieldName.toLowerCase()
+  );
+  // Return the actual value (which could be a string, an array, etc.) or undefined if not found
+  return field?.value;
+};
+
+
+
 
 interface AddProjectModalProps {
   open: boolean;
   onClose: () => void;
+  // This prop is for the "Add" flow
   onNext: (projectData: any) => void;
+  // This prop is for the "Edit" flow
+  onProjectSaved?: () => void;
+  // This prop will determine if we are adding or editing
+  project?: ProjectSummary | null;
 }
 
-// --- (No changes to the options arrays) ---
+// All the options arrays remain the same
 const techStackOptions = ['Node.js', 'Angular','Ruby','Python','Javascript','Java','Ruby On Rails','Nest.js','PHP','Django','Flask','Laravel','Express.js','jQuery','ASP.NET','Cake PHP','Symphony','Svelte','Next.js','React.js','sinatra','Vue.js','Spring Boot','Spring','MongoDB','MySql','Postgres','Testing'];
 const proposalProjectOptions = ['Freshworks AMC', 'Tafe', 'Almozaini'];
 const projectTypeOptions = ['Client', 'Internal'];
@@ -25,8 +50,11 @@ const accountNameOptions = [
   'Hastraa', 'Trillium', 'AME Chain', 'Securenext'
 ];
 
-const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext }) => {
-  // --- (No changes to the form data states) ---
+const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext, project, onProjectSaved }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+
   const [projectName, setProjectName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [description, setDescription] = useState('');
@@ -38,14 +66,75 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
   const [projectMode, setProjectMode] = useState('');
   const [accountName, setAccountName] = useState('');
   const [proposalProject, setProposalProject] = useState('');
+  
+  useEffect(() => {
+    if (project && open) {
+      setLoading(true);
+      const fetchDetails = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/projects/${project.id}`, { withCredentials: true });
+          console.log("RECEIVED PROJECT DATA:", JSON.stringify(response.data, null, 2));
+          const fullProject: ProjectDetails = response.data.project;
 
-  // --- NEW: State to hold validation errors for each field ---
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+          // setProjectName(fullProject.name);
+          // setIdentifier(fullProject.identifier);
+          // setDescription(fullProject.description);
+          // setAccountName(getCustomFieldValue(fullProject, 'Account Name'));
+          // setProjectCode(getCustomFieldValue(fullProject, 'Project Code'));
+          // setStartDate(getCustomFieldValue(fullProject, 'Start Date'));
+          // setEndDate(getCustomFieldValue(fullProject, 'End Date'));
+          // setTechStack(getCustomFieldValue(fullProject, 'Tech Stack')?.split(',') || []);
+          // setProjectType(getCustomFieldValue(fullProject, 'Project Type'));
+          // setProjectMode(getCustomFieldValue(fullProject, 'Project Mode'));
+          // setProposalProject(getCustomFieldValue(fullProject, 'Proposal Project'));
+          setProjectName(fullProject.name || '');
+setIdentifier(fullProject.identifier || '');
+setDescription(fullProject.description || '');
 
-  // --- UPDATED: Validation logic now returns an object of errors ---
+// Set custom fields using our new robust helper and providing safe defaults
+setAccountName(getCustomFieldValue(fullProject, 'Account Name') || '');
+setProjectCode(getCustomFieldValue(fullProject, 'Project Code') || '');
+setStartDate(getCustomFieldValue(fullProject, 'Start Date') || '');
+setEndDate(getCustomFieldValue(fullProject, 'End Date') || '');
+setProjectType(getCustomFieldValue(fullProject, 'Project type') || '');
+setProjectMode(getCustomFieldValue(fullProject, 'Project Mode') || '');
+setProposalProject(getCustomFieldValue(fullProject, 'Proposal Project') || '');
+
+// Special, safe handling for Tech Stack, which is an array
+const techStackValue = getCustomFieldValue(fullProject, 'Tech Stack');
+setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
+
+
+
+
+
+        } catch (err) {
+          setError('Failed to load project details for editing.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchDetails();
+    } else if (!project && open) {
+      setProjectName('');
+      setIdentifier('');
+      setDescription('');
+      setProjectCode('');
+      setStartDate('');
+      setEndDate('');
+      setTechStack([]);
+      setProjectType('');
+      setProjectMode('');
+      setAccountName('');
+      setProposalProject('');
+      setLoading(false);
+    }
+    setValidationErrors({});
+    setError(null);
+  }, [project, open]);
+
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-
     if (!accountName) newErrors.accountName = 'Account Name is required.';
     if (!projectName.trim()) newErrors.projectName = 'Project Name is required.';
     if (!identifier.trim()) newErrors.identifier = 'Project Identifier is required.';
@@ -64,18 +153,53 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
     }
     if (techStack.length === 0) newErrors.techStack = 'At least one Tech Stack must be selected.';
     if (!proposalProject) newErrors.proposalProject = 'Proposal Project is required.';
-    
     return newErrors;
   };
-  
-  const handleNext = () => {
-    const validationErrors = validateForm();
-    setErrors(validationErrors); // Set errors to trigger UI updates
 
-    // If the errors object is empty, the form is valid
-    if (Object.keys(validationErrors).length === 0) {
+  const handleSaveOrNext = async () => {
+    const errors = validateForm();
+    setValidationErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    if (project) {
+      // --- EDIT MODE: Make a PUT request and then close ---
+      setLoading(true);
+      setError(null);
+      const payload = {
+        project: {
+          name: projectName,
+          identifier,
+          description,
+          custom_fields: [
+            { id: 48, value: accountName },
+            { id: 37, value: projectCode },
+            { id: 42, value: projectType },
+            { id: 47, value: projectMode },
+            { id: 38, value: startDate },
+            { id: 39, value: endDate },
+            { id: 40, value: techStack   },
+            { id: 52, value: proposalProject },
+          ],
+        },
+      };
+
+      try {
+        await axios.put(`http://localhost:5000/api/projects/${project.id}`, payload, { withCredentials: true });
+        onProjectSaved && onProjectSaved(); // Call the parent handler to re-fetch
+        onClose();
+      } catch (err: any) {
+        console.error('API Error:', err.response?.data?.message || err.message);
+        setError(err.response?.data?.message || 'An unexpected error occurred.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // --- ADD MODE: Pass data to the next modal ---
       const projectData = {
-        name: projectName,
+        projectName,
         identifier,
         description,
         projectCode,
@@ -92,7 +216,6 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
   };
 
   const handleClose = () => {
-    // Reset all states on close
     setProjectName('');
     setIdentifier('');
     setDescription('');
@@ -104,91 +227,101 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
     setProjectMode('');
     setAccountName('');
     setProposalProject('');
-    setErrors({}); // Clear errors as well
+    setValidationErrors({});
     onClose();
   };
 
+  if (loading) {
+    return (
+      <Dialog open={open}>
+        <DialogContent>
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <CircularProgress />
+          </Box>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Add New Project</DialogTitle>
+      <DialogTitle>{project ? 'Edit Project' : 'Add New Project'}</DialogTitle>
       <DialogContent>
+        {error && <Alert severity="error">{error}</Alert>}
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          
-          {/* --- UPDATED: All form groups now include a span to show the error message --- */}
-          
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="account-name" className="required-label">Account Name</label>
               <select id="account-name" value={accountName} onChange={(e) => setAccountName(e.target.value)}>
                 <option value="">--Select Account Name--</option>
                 {accountNameOptions.map((option) => (<option key={option} value={option}>{option}</option>))}
               </select>
-              {errors.accountName && <span className="error-message">{errors.accountName}</span>}
+              {validationErrors.accountName && <span className="error-message">{validationErrors.accountName}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="project-name" className="required-label">Project Name</label>
               <input type="text" id="project-name" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
-              {errors.projectName && <span className="error-message">{errors.projectName}</span>}
+              {validationErrors.projectName && <span className="error-message">{validationErrors.projectName}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="project-identifier" className="required-label">Project Identifier</label>
               <input type="text" id="project-identifier" value={identifier} onChange={(e) => setIdentifier(e.target.value)} />
-              {errors.identifier && <span className="error-message">{errors.identifier}</span>}
+              {validationErrors.identifier && <span className="error-message">{validationErrors.identifier}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="project-code" className="required-label">Project Code</label>
               <input type="text" id="project-code" value={projectCode} onChange={(e) => setProjectCode(e.target.value)} />
-              {errors.projectCode && <span className="error-message">{errors.projectCode}</span>}
+              {validationErrors.projectCode && <span className="error-message">{validationErrors.projectCode}</span>}
             </div>
           </Grid>
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <div className="form-group">
               <label htmlFor="description" className="required-label">Description</label>
               <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={2}></textarea>
-              {errors.description && <span className="error-message">{errors.description}</span>}
+              {validationErrors.description && <span className="error-message">{validationErrors.description}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="project-type" className="required-label">Project Type</label>
               <select id="project-type" value={projectType} onChange={(e) => setProjectType(e.target.value)}>
                 <option value="">--Select Project Type--</option>
                 {projectTypeOptions.map((option) => (<option key={option} value={option}>{option}</option>))}
               </select>
-              {errors.projectType && <span className="error-message">{errors.projectType}</span>}
+              {validationErrors.projectType && <span className="error-message">{validationErrors.projectType}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="project-mode" className="required-label">Project Mode</label>
               <select id="project-mode" value={projectMode} onChange={(e) => setProjectMode(e.target.value)}>
                 <option value="">--Select Project Mode--</option>
                 {projectModeOptions.map((option) => (<option key={option} value={option}>{option}</option>))}
               </select>
-              {errors.projectMode && <span className="error-message">{errors.projectMode}</span>}
+              {validationErrors.projectMode && <span className="error-message">{validationErrors.projectMode}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="start-date" className="required-label">Start Date</label>
               <input type="date" id="start-date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-              {errors.startDate && <span className="error-message">{errors.startDate}</span>}
+              {validationErrors.startDate && <span className="error-message">{validationErrors.startDate}</span>}
             </div>
           </Grid>
-          <Grid xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <div className="form-group">
               <label htmlFor="end-date" className="required-label">End Date</label>
               <input type="date" id="end-date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-              {errors.endDate && <span className="error-message">{errors.endDate}</span>}
+              {validationErrors.endDate && <span className="error-message">{validationErrors.endDate}</span>}
             </div>
           </Grid>
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <div className="form-group">
               <label htmlFor="tech-stack" className="required-label">Tech Stack</label>
               <select id="tech-stack" multiple value={techStack} onChange={(e) => {
@@ -197,24 +330,30 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
                 }}>
                 {techStackOptions.map((option) => (<option key={option} value={option}>{option}</option>))}
               </select>
-              {errors.techStack && <span className="error-message">{errors.techStack}</span>}
+              {validationErrors.techStack && <span className="error-message">{validationErrors.techStack}</span>}
             </div>
           </Grid>
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <div className="form-group">
               <label htmlFor="proposal-project" className="required-label">Proposal Project</label>
               <select id="proposal-project" value={proposalProject} onChange={(e) => setProposalProject(e.target.value)}>
                 <option value="">--Select Proposal--</option>
                 {proposalProjectOptions.map((option) => (<option key={option} value={option}>{option}</option>))}
               </select>
-              {errors.proposalProject && <span className="error-message">{errors.proposalProject}</span>}
+              {validationErrors.proposalProject && <span className="error-message">{validationErrors.proposalProject}</span>}
             </div>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleNext} variant="contained">Next</Button>
+        <Button onClick={handleSaveOrNext} variant="contained" disabled={loading}>
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            project ? 'Save Changes' : 'Next'
+          )}
+        </Button>
       </DialogActions>
     </Dialog>
   );

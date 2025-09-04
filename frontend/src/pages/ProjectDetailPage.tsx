@@ -22,40 +22,46 @@ const ProjectDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
         const [isModalOpen, setIsModalOpen] = useState(false);
+        const [totalHours, setTotalHours] = useState<number | null>(null);
+
 
     
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            if (!id) return;
-            try {
-                setLoading(true);
-                const projectPromise = axios.get(`http://localhost:5000/api/projects/${id}`);
-                const membersPromise = axios.get(`http://localhost:5000/api/projects/${id}/members`);
-                const [projectResponse, membersResponse] = await Promise.all([projectPromise, membersPromise]);
+  const fetchDetails = async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
 
+      const projectPromise = axios.get(`http://localhost:5000/api/projects/${id}`);
+      const membersPromise = axios.get(`http://localhost:5000/api/projects/${id}/members`);
+      const hoursPromise = axios.get(`http://localhost:5000/api/projects/${id}/logged-hours`);
 
-                                console.log("API Response for Members:", membersResponse.data);
-                                if (membersResponse.data && membersResponse.data.memberships) {
-                    console.log("SUCCESS: Found 'memberships' array in the response.");
-                    setMemberships(membersResponse.data.memberships);
-                } else {
-                    console.error("ERROR: The API response for members is missing the 'memberships' key. The data received was:", membersResponse.data);
-                    // Set to an empty array so the app doesn't crash
-                    setMemberships([]);
-                }
+      const [projectResponse, membersResponse, hoursResponse] = await Promise.all([
+        projectPromise,
+        membersPromise,
+        hoursPromise
+      ]);
 
+      setProject(projectResponse.data.project);
 
-                setProject(projectResponse.data.project);
-                setMemberships(membersResponse.data.memberships);
-            } catch (err) {
-                setError('Failed to fetch project details.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDetails();
-    }, [id]);
+      if (membersResponse.data && membersResponse.data.memberships) {
+        setMemberships(membersResponse.data.memberships);
+      } else {
+        setMemberships([]);
+      }
+
+      setTotalHours(hoursResponse.data.loggedHours);
+
+    } catch (err) {
+      setError("Failed to fetch project details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDetails();
+}, [id]);
 
     const { projectOwner, projectManager, teamMembers } = useMemo(() => {
         const owner = memberships.find(m => m.roles.some(r => r.name === 'Project Owner'));
@@ -67,8 +73,10 @@ const ProjectDetailPage: React.FC = () => {
             projectManager: manager,
             teamMembers: remainingMembers
         });
+        
         return { projectOwner: owner, projectManager: manager, teamMembers: remainingMembers };
     }, [memberships]);
+
 
 
      const handleMembersAdded = (newlyAddedMemberships: Membership[]) => {
@@ -92,13 +100,19 @@ const ProjectDetailPage: React.FC = () => {
                  {/* --- 4. ADD THE BUTTON TO THE UI --- */}
             <Button
                 variant="outlined"
+                style={{ marginTop: '20px',marginLeft:'850px' }}
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate(-1)} // This takes the user to the previous page
                 sx={{ mb: 3 }} // Adds some margin at the bottom
             >
-                Back to Dashboard
+                Back to Project Dashboard
             </Button>
             <ProjectHeader project={project} owner={projectOwner} manager={projectManager} />
+            {totalHours !== null && (
+  <Box sx={{ mt: 2, fontWeight: "bold" }}>
+    Total Logged Hours: {totalHours}
+  </Box>
+)}
             {/* <MemberList members={teamMembers} onAddMemberClick={() => setIsModalOpen(true)} /> */}
             <MemberList members={teamMembers} onAddMemberClick={() => setIsModalOpen(true)}     projectId={Number(id)}   onMemberDeleted={handleMemberDeleted}/>
 

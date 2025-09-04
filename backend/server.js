@@ -11,8 +11,12 @@ const fs = require('fs');
 
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
+
+
 const projectRoutes = require('./routes/projectRoutes'); // project routes  
  const resumeRoutes = require('./routes/resumeRoutes'); // resume routes
+//  const skillRoutes = require('./routes/skillRoutes'); // skill routes
+//  const calendarRoutes = require('./routes/calendarRoute'); // calendar routes
 const originalsDir = path.join(__dirname, 'uploads', 'originals');
 const formattedDir = path.join(__dirname, 'uploads', 'formatted');
 
@@ -66,6 +70,8 @@ app.use('/api', apiRoutes);
 app.use('/api',projectRoutes)
 // app.use('/resumes', resumeRoutes); // mount resume routes
 app.use('/api/resumes', resumeRoutes);
+// app.use('/api', skillRoutes); // mount skill routes
+// app.use("/api/calendar", calendarRoutes);
 
 // Global error handler (optional)
 app.use((err, req, res, next) => {
