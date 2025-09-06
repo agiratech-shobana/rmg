@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import '../styles/AppProjectModal.css';
-import type { ProjectSummary, ProjectDetails } from '../types/project';
+import type { ProjectSummary, ProjectDetails,ProjectFormData } from '../types/project';
 
 // Helper function to get custom field value by name
 // const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
@@ -15,12 +15,23 @@ import type { ProjectSummary, ProjectDetails } from '../types/project';
 // };
 
 // This new helper is case-insensitive and returns the raw value from the API
-const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
+// const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
+//   const field = project.custom_fields.find(
+//     cf => cf.name.toLowerCase() === fieldName.toLowerCase()
+//   );
+//   // Return the actual value (which could be a string, an array, etc.) or undefined if not found
+//   return field?.value;
+// };
+
+
+const getCustomFieldValue = (project: ProjectDetails, fieldName: string): string | string[] | undefined => {
   const field = project.custom_fields.find(
     cf => cf.name.toLowerCase() === fieldName.toLowerCase()
   );
-  // Return the actual value (which could be a string, an array, etc.) or undefined if not found
-  return field?.value;
+  const value = field?.value;
+
+  if (typeof value === 'string' || Array.isArray(value)) return value;
+  return undefined;
 };
 
 
@@ -30,7 +41,7 @@ interface AddProjectModalProps {
   open: boolean;
   onClose: () => void;
   // This prop is for the "Add" flow
-  onNext: (projectData: any) => void;
+  onNext: (projectData: ProjectFormData) => void;
   // This prop is for the "Edit" flow
   onProjectSaved?: () => void;
   // This prop will determine if we are adding or editing
@@ -76,31 +87,31 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
           console.log("RECEIVED PROJECT DATA:", JSON.stringify(response.data, null, 2));
           const fullProject: ProjectDetails = response.data.project;
 
-          // setProjectName(fullProject.name);
-          // setIdentifier(fullProject.identifier);
-          // setDescription(fullProject.description);
-          // setAccountName(getCustomFieldValue(fullProject, 'Account Name'));
-          // setProjectCode(getCustomFieldValue(fullProject, 'Project Code'));
-          // setStartDate(getCustomFieldValue(fullProject, 'Start Date'));
-          // setEndDate(getCustomFieldValue(fullProject, 'End Date'));
-          // setTechStack(getCustomFieldValue(fullProject, 'Tech Stack')?.split(',') || []);
-          // setProjectType(getCustomFieldValue(fullProject, 'Project Type'));
-          // setProjectMode(getCustomFieldValue(fullProject, 'Project Mode'));
-          // setProposalProject(getCustomFieldValue(fullProject, 'Proposal Project'));
           setProjectName(fullProject.name || '');
 setIdentifier(fullProject.identifier || '');
 setDescription(fullProject.description || '');
 
 // Set custom fields using our new robust helper and providing safe defaults
-setAccountName(getCustomFieldValue(fullProject, 'Account Name') || '');
-setProjectCode(getCustomFieldValue(fullProject, 'Project Code') || '');
-setStartDate(getCustomFieldValue(fullProject, 'Start Date') || '');
-setEndDate(getCustomFieldValue(fullProject, 'End Date') || '');
-setProjectType(getCustomFieldValue(fullProject, 'Project type') || '');
-setProjectMode(getCustomFieldValue(fullProject, 'Project Mode') || '');
-setProposalProject(getCustomFieldValue(fullProject, 'Proposal Project') || '');
+// setAccountName(getCustomFieldValue(fullProject, 'Account Name') || '');
+// setProjectCode(getCustomFieldValue(fullProject, 'Project Code') || '');
+// setStartDate(getCustomFieldValue(fullProject, 'Start Date') || '');
+// setEndDate(getCustomFieldValue(fullProject, 'End Date') || '');
+// setProjectType(getCustomFieldValue(fullProject, 'Project type') || '');
+// setProjectMode(getCustomFieldValue(fullProject, 'Project Mode') || '');
+// setProposalProject(getCustomFieldValue(fullProject, 'Proposal Project') || '');
+
+setAccountName((getCustomFieldValue(fullProject, 'Account Name') as string) || '');
+setProjectCode((getCustomFieldValue(fullProject, 'Project Code') as string) || '');
+setStartDate((getCustomFieldValue(fullProject, 'Start Date') as string) || '');
+setEndDate((getCustomFieldValue(fullProject, 'End Date') as string) || '');
+setProjectType((getCustomFieldValue(fullProject, 'Project Type') as string) || '');
+setProjectMode((getCustomFieldValue(fullProject, 'Project Mode') as string) || '');
+setProposalProject((getCustomFieldValue(fullProject, 'Proposal Project') as string) || '');
+
 
 // Special, safe handling for Tech Stack, which is an array
+// const techStackValue = getCustomFieldValue(fullProject, 'Tech Stack');
+// setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
 const techStackValue = getCustomFieldValue(fullProject, 'Tech Stack');
 setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
 
@@ -108,9 +119,15 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
 
 
 
-        } catch (err) {
-          setError('Failed to load project details for editing.');
-        } finally {
+        } 
+        // catch (err) {
+        //   setError('Failed to load project details for editing.');
+        // }
+        catch (err: unknown) {
+  console.error(err);
+  setError('Failed to load project details for editing.');
+}
+         finally {
           setLoading(false);
         }
       };
@@ -188,12 +205,25 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
 
       try {
         await axios.put(`http://localhost:5000/api/projects/${project.id}`, payload, { withCredentials: true });
-        onProjectSaved && onProjectSaved(); // Call the parent handler to re-fetch
+        onProjectSaved?.(); // Call the parent handler to re-fetch
         onClose();
-      } catch (err: any) {
-        console.error('API Error:', err.response?.data?.message || err.message);
-        setError(err.response?.data?.message || 'An unexpected error occurred.');
-      } finally {
+      } 
+      // catch (err: any) {
+      //   console.error('API Error:', err.response?.data?.message || err.message);
+      //   setError(err.response?.data?.message || 'An unexpected error occurred.');
+      // }
+       catch (err) {
+  if (axios.isAxiosError(err)) {
+    console.error('API Error:', err.response?.data?.message || err.message);
+    setError(err.response?.data?.message || 'An unexpected error occurred.');
+  } else if (err instanceof Error) {
+    console.error('Unexpected Error:', err.message);
+    setError(err.message);
+  } else {
+    setError('An unexpected error occurred.');
+  }
+}
+       finally {
         setLoading(false);
       }
     } else {
@@ -249,7 +279,7 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="account-name" className="required-label">Account Name</label>
               <select id="account-name" value={accountName} onChange={(e) => setAccountName(e.target.value)}>
@@ -259,35 +289,35 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
               {validationErrors.accountName && <span className="error-message">{validationErrors.accountName}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-name" className="required-label">Project Name</label>
               <input type="text" id="project-name" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               {validationErrors.projectName && <span className="error-message">{validationErrors.projectName}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-identifier" className="required-label">Project Identifier</label>
               <input type="text" id="project-identifier" value={identifier} onChange={(e) => setIdentifier(e.target.value)} />
               {validationErrors.identifier && <span className="error-message">{validationErrors.identifier}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-code" className="required-label">Project Code</label>
               <input type="text" id="project-code" value={projectCode} onChange={(e) => setProjectCode(e.target.value)} />
               {validationErrors.projectCode && <span className="error-message">{validationErrors.projectCode}</span>}
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="description" className="required-label">Description</label>
               <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={2}></textarea>
               {validationErrors.description && <span className="error-message">{validationErrors.description}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-type" className="required-label">Project Type</label>
               <select id="project-type" value={projectType} onChange={(e) => setProjectType(e.target.value)}>
@@ -297,7 +327,7 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
               {validationErrors.projectType && <span className="error-message">{validationErrors.projectType}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-mode" className="required-label">Project Mode</label>
               <select id="project-mode" value={projectMode} onChange={(e) => setProjectMode(e.target.value)}>
@@ -307,21 +337,21 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
               {validationErrors.projectMode && <span className="error-message">{validationErrors.projectMode}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={5}>
             <div className="form-group">
               <label htmlFor="start-date" className="required-label">Start Date</label>
               <input type="date" id="start-date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
               {validationErrors.startDate && <span className="error-message">{validationErrors.startDate}</span>}
             </div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={4}>
             <div className="form-group">
               <label htmlFor="end-date" className="required-label">End Date</label>
               <input type="date" id="end-date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
               {validationErrors.endDate && <span className="error-message">{validationErrors.endDate}</span>}
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={3}>
             <div className="form-group">
               <label htmlFor="tech-stack" className="required-label">Tech Stack</label>
               <select id="tech-stack" multiple value={techStack} onChange={(e) => {
@@ -333,7 +363,7 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
               {validationErrors.techStack && <span className="error-message">{validationErrors.techStack}</span>}
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={4}>
             <div className="form-group">
               <label htmlFor="proposal-project" className="required-label">Proposal Project</label>
               <select id="proposal-project" value={proposalProject} onChange={(e) => setProposalProject(e.target.value)}>

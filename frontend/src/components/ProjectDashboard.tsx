@@ -13,7 +13,7 @@ import ProjectCard from './ProjectCard';
 import AddProjectModal from './AppProjectModal'; // Now handles both Add and Edit
 import AddMembersModal from './AddMembersModal';
 import DeleteProjectModal from './DeleteProjectModal';
-import type { ProjectSummary } from '../types/project';
+import type { ProjectSummary ,ProjectFormData} from '../types/project';
 
 const ProjectDashboard: React.FC = () => {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
@@ -24,14 +24,16 @@ const ProjectDashboard: React.FC = () => {
   // Modal states for the two-step "Add" flow
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
-  const [projectDataForMembers, setProjectDataForMembers] = useState<any>(null);
-    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  // const [projectDataForMembers, setProjectDataForMembers] = useState<any>(null);
+  const [projectDataForMembers, setProjectDataForMembers] = useState<ProjectFormData | null>(null);
+
+    // const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
 
 
   // States for other modals remain the same
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectSummary | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState<ProjectSummary | null>(null);
 
    const [searchQuery, setSearchQuery] = useState('');
@@ -64,7 +66,7 @@ const ProjectDashboard: React.FC = () => {
   }, []);
 
   // Handler for the first modal's 'Next' button (Add flow)
-  const handleNextInProjectModal = (projectData: any) => {
+  const handleNextInProjectModal = (projectData: ProjectFormData) => {
     setIsAddProjectModalOpen(false); // Close the first modal
     setProjectDataForMembers(projectData); // Store the project data
     setIsMembersModalOpen(true); // Open the second modal
@@ -187,19 +189,19 @@ const ProjectDashboard: React.FC = () => {
      
 
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        <Grid  xs={12} sm={6} md={3}>
+        <Grid size={2}>
           <Box p={2} border={1} borderColor="primary.main" borderRadius={2}>
             <Typography variant="h5">Total Projects</Typography>
             <Typography variant="h3" color="primary">{totalCount}</Typography>
           </Box>
         </Grid>
-        <Grid  xs={12} sm={6} md={3}>
+        <Grid  size={2.3}>
           <Box p={2} border={1} borderColor="warning.main" borderRadius={2}>
             <Typography variant="h5">Ongoing Projects</Typography>
             <Typography variant="h3" color="warning">{ongoingCount}</Typography>
           </Box>
         </Grid>
-        <Grid  xs={12} sm={6} md={3}>
+        <Grid  size={2.3}>
           <Box p={2} border={1} borderColor="success.main" borderRadius={2}>
             <Typography variant="h5">Finished Projects</Typography>
             <Typography variant="h3" color="success">{finishedCount}</Typography>
@@ -231,7 +233,7 @@ const ProjectDashboard: React.FC = () => {
       <Grid container spacing={4} sx={{ mt: 2, justifyContent: 'flex-start' }}>
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
-            <Grid  key={project.id} xs={12} sm={6} md={4} lg={4}>
+            <Grid  key={project.id} size={4}>
               <ProjectCard project={project}
                onDeleteClick={handleDeleteClick} 
                onEditClick={handleEditClick} />

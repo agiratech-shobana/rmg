@@ -240,7 +240,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
     Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, 
-    Box, Typography, CircularProgress, Snackbar, Alert 
+    Box, Typography, CircularProgress, 
 } from '@mui/material';
 import axios from 'axios';
 import type { ProjectSummary } from '../types/project';

@@ -215,7 +215,13 @@ const SkillDashboard: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
 
     // New state for Snackbar
-    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+    // const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+    type SnackbarSeverity = 'success' | 'error' | 'warning' | 'info';
+const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({
+    open: false,
+    message: '',
+    severity: 'success',
+})
 
     const fetchSkillData = async () => {
         try {
@@ -243,10 +249,23 @@ const SkillDashboard: React.FC = () => {
             setAddSkillOpen(false); // Close the dialog
             setNewSkillName(''); // Clear the input
             fetchSkillData(); // Refresh the data to show the new skill
-        } catch (err: any) {
-            console.error('Failed to add skill:', err.response?.data?.error || err.message);
-            setSnackbar({ open: true, message: err.response?.data?.error || 'Failed to add skill.', severity: 'error' });
-        } finally {
+        } 
+        // catch (err: any) {
+        //     console.error('Failed to add skill:', err.response?.data?.error || err.message);
+        //     setSnackbar({ open: true, message: err.response?.data?.error || 'Failed to add skill.', severity: 'error' });
+        // } 
+        catch (err: unknown) {
+    const message = axios.isAxiosError(err)
+        ? err.response?.data?.error || err.message
+        : err instanceof Error
+        ? err.message
+        : String(err);
+
+    console.error('Failed to add skill:', message);
+    setSnackbar({ open: true, message, severity: 'error' });
+}
+
+        finally {
             setSubmitting(false);
         }
     };
@@ -349,7 +368,7 @@ const SkillDashboard: React.FC = () => {
 
             {/* Snackbar for feedback */}
             <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity={snackbar.severity as any} sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} severity={snackbar.severity } sx={{ width: '100%' }}>
                     {snackbar.message}
                 </Alert>
             </Snackbar>

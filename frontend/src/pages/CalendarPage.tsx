@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import type { EventInput } from "@fullcalendar/core";
 import axios from "axios";
 
 interface Project {
@@ -13,7 +14,9 @@ interface Project {
 }
 
 const ProjectCalendar: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]);
+  // const [events, setEvents] = useState<any[]>([]);
+    const [events, setEvents] = useState<EventInput[]>([]);
+
 
 //   useEffect(() => {
 //     const loadProjects = async () => {

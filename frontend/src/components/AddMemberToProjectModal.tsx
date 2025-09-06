@@ -209,7 +209,7 @@ const AddMemberToProjectModal: React.FC<AddMemberToProjectModalProps> = ({ open,
                                 {allRoles.map(role => {
                                     const labelId = `checkbox-list-label-role-${role.id}`;
                                     return (
-                                    <Grid item xs={12} sm={6} md={4} key={role.id}>
+                                    <Grid  key={role.id}>
                                         <ListItem disablePadding>
                                             <Button onClick={() => handleRoleToggle(role.id)} sx={{ width: '100%', justifyContent: 'flex-start', textTransform: 'none' }}>
                                                 <ListItemIcon>

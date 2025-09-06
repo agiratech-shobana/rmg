@@ -252,12 +252,12 @@ import {
   List, ListItem, ListItemIcon, Checkbox, ListItemText, CircularProgress, Box, Typography, Divider, Grid, Snackbar, Alert, TextField
 } from '@mui/material';
 import axios from 'axios';
-import type { User, Role} from '../types/project';
+import type { User, Role,ProjectFormData} from '../types/project';
 
 interface AddMembersModalProps {
   open: boolean;
   onClose: () => void;
-  projectData: any;
+  projectData: ProjectFormData |null;
 }
 
 const AddMembersModal: React.FC<AddMembersModalProps> = ({ open, onClose, projectData }) => {
@@ -402,17 +402,30 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({ open, onClose, projec
     try {
       await axios.post('http://localhost:5000/api/projects', payload);
       setSnackbarState({ open: true, message: 'Project and members added successfully!', severity: 'success' });
-      handleClose(true); // Close all modals and trigger re-fetch
-    } catch (err: any) {
-      console.error('Error in two-step project creation:', err.response?.data?.errors || err);
-      const errorMessage = err.response?.data?.message || 'Failed to add project and members.';
-      setSnackbarState({ open: true, message: errorMessage, severity: 'error' });
-    } finally {
+      handleClose(); // Close all modals and trigger re-fetch
+    }
+    //  catch (err: any) {
+    //   console.error('Error in two-step project creation:', err.response?.data?.errors || err);
+    //   const errorMessage = err.response?.data?.message || 'Failed to add project and members.';
+    //   setSnackbarState({ open: true, message: errorMessage, severity: 'error' });
+    // } 
+    catch (err: unknown) {
+  if (axios.isAxiosError(err)) {
+    console.error('Error in two-step project creation:', err.response?.data?.errors || err);
+    const errorMessage = err.response?.data?.message || 'Failed to add project and members.';
+    setSnackbarState({ open: true, message: errorMessage, severity: 'error' });
+  } else {
+    console.error('Unexpected error:', err);
+    setSnackbarState({ open: true, message: 'Unexpected error occurred.', severity: 'error' });
+  }
+}
+    finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleClose = (isSuccess: boolean = false) => {
+  // const handleClose = (isSuccess: boolean = false) => {
+  const handleClose = () => {
     setSelectedUserIds(new Set());
     setSelectedRoleIds(new Set());
     setUserSearch("");
@@ -474,7 +487,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({ open, onClose, projec
                 {roles.map((role: Role) => {
                   const labelId = `checkbox-list-label-role-${role.id}`;
                   return (
-                    <Grid item xs={12} sm={6} md={4} key={role.id}>
+                    <Grid size={2.5} key={role.id}>
                       <ListItem disablePadding>
                         <Button onClick={() => handleRoleToggle(role.id)} sx={{ width: '100%', justifyContent: 'flex-start', textTransform: 'none' }}>
                           <ListItemIcon>

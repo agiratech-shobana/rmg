@@ -25,6 +25,17 @@ const ProjectDetailPage: React.FC = () => {
         const [totalHours, setTotalHours] = useState<number | null>(null);
 
 
+        function getErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.error || err.message;
+  }
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return String(err);
+}
+
+
     
 
     useEffect(() => {
@@ -53,8 +64,8 @@ const ProjectDetailPage: React.FC = () => {
 
       setTotalHours(hoursResponse.data.loggedHours);
 
-    } catch (err) {
-      setError("Failed to fetch project details.");
+    } catch (err:unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

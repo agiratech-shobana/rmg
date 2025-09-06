@@ -17,10 +17,11 @@ interface MemberListProps {
 
 const MemberList: React.FC<MemberListProps> = ({ projectId, members, onAddMemberClick, onMemberDeleted }) => {
 const [deletingId, setDeletingId] = useState<number | null>(null);
+type SnackbarSeverity = 'info' | 'success' | 'error' | 'warning';
 const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: '',
-    severity: 'info',
+    severity: 'info' as SnackbarSeverity,
     isConfirmation: false,
     actionId: null as number | null,
 });
@@ -69,11 +70,23 @@ const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: stri
             // Show a success snackbar instead of an alert
             showSnackbar('Member removed successfully!', 'success');
 
-        } catch (error: any) {
-            console.error('Failed to delete member:', error.response?.data || error);
+        } 
+        // catch (error: any) {
+        //     console.error('Failed to delete member:', error.response?.data || error);
+        //     // Show an error snackbar instead of an alert
+        //     showSnackbar('An error occurred while removing the member.', 'error');
+        // } 
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('Failed to delete member:', error.response?.data || error.message);
+            } else {
+                console.error('An unexpected error occurred:', error);
+            }
             // Show an error snackbar instead of an alert
             showSnackbar('An error occurred while removing the member.', 'error');
-        } finally {
+        }
+        
+        finally {
             setDeletingId(null);
             setSnackbarState(prevState => ({ ...prevState, actionId: null }));
         }
@@ -120,7 +133,7 @@ const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: stri
                 {snackbarState.isConfirmation ? (
                     <Alert
                         onClose={handleSnackbarClose}
-                        severity={snackbarState.severity as any} // Cast needed for MUI type
+                        severity={snackbarState.severity } // Cast needed for MUI type
                         variant="filled"
                         action={
                             <>
@@ -138,7 +151,7 @@ const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: stri
                 ) : (
                     <Alert
                         onClose={handleSnackbarClose}
-                        severity={snackbarState.severity as any}
+                        severity={snackbarState.severity }
                         variant="filled"
                         sx={{ width: '100%' }}
                     >

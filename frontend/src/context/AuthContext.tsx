@@ -1,6 +1,7 @@
 // src/context/AuthContext.tsx
 
-import { createContext, useState, useEffect, ReactNode, useContext } from "react";
+import { createContext, useState, useEffect,  useContext } from "react";
+import type { ReactNode } from "react";
 import axios from "axios";
 
 interface User {
@@ -39,6 +40,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+  export const useAuth = () => {
+    return useContext(AuthContext);
+  };
