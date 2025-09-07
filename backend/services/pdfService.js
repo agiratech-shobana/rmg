@@ -25,7 +25,7 @@ exports.generatePDF = async (data) => {
   const html = await ejs.renderFile(
     path.join(__dirname, "../views", "resumeTemplate.ejs"),
     dataForEJS
-  );
+  );  
 
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   const page = await browser.newPage();
