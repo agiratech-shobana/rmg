@@ -306,7 +306,7 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
           <Grid size={5}>
             <div className="form-group">
               <label htmlFor="project-code" className="required-label">Project Code</label>
-              <input type="text" id="project-code" value={projectCode} onChange={(e) => setProjectCode(e.target.value)} />
+              <input type="text" id="project-code" value={projectCode} onChange={(e) => setProjectCode(e.target.value)} placeholder='ATPR###' />
               {validationErrors.projectCode && <span className="error-message">{validationErrors.projectCode}</span>}
             </div>
           </Grid>

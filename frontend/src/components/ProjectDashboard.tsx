@@ -17,7 +17,7 @@ import type { ProjectSummary ,ProjectFormData} from '../types/project';
 
 const ProjectDashboard: React.FC = () => {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
 
