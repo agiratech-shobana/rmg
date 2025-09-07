@@ -35,8 +35,10 @@
     "p-limit": "^5.0.0",
     "pdf-parse": "^1.1.1",
     "pdf-parser": "^1.0.5",
+    "pdf-to-png-converter": "^3.7.1",
     "puppeteer": "^24.16.2",
     "sequelize": "^6.37.7",
+    "tesseract.js": "^6.0.1",
     "textract": "^2.5.0"
   }
 }
