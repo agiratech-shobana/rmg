@@ -18,29 +18,6 @@ const ProjectCalendar: React.FC = () => {
     const [events, setEvents] = useState<EventInput[]>([]);
 
 
-//   useEffect(() => {
-//     const loadProjects = async () => {
-//       try {
-//         const res = await axios.get<Project[]>("http://localhost:5000/api/projects");
-//         const projects = res.data;
-
-//         const calendarEvents = projects.map((p) => ({
-//           id: p.id.toString(),
-//           title: `${p.name} (Deadline)`,
-//           start: p.endDate,
-//           allDay: true,
-//           color: "red", // show deadline in red
-//         }));
-
-//         setEvents(calendarEvents);
-//       } catch (err) {
-//         console.error("Error loading projects:", err);
-//       }
-//     };
-
-//     loadProjects();
-//   }, []);
-
 
  useEffect(() => {
     const loadProjects = async () => {

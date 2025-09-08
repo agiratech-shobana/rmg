@@ -60,7 +60,9 @@ const UserListComponent: React.FC<UserListComponentProps> = ({
   return (
     <Box
       flex={1}
-      width={900}
+      // width={900}
+       maxWidth={400} // 900 was likely too wide. Adjust as needed.
+       minWidth={350}
       p={3}
       borderRight="1px solid #e0e0e0"
       display="flex"
@@ -71,6 +73,7 @@ const UserListComponent: React.FC<UserListComponentProps> = ({
         boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
         mx: 2,
         my: 3,
+        height: 'calc(100% - 48px)',
       }}
     >
       <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold", color: 'primary.main' }}>
@@ -84,7 +87,7 @@ const UserListComponent: React.FC<UserListComponentProps> = ({
         onChange={(e) => onSearchChange(e.target.value)}
         sx={{ mb: 2 }}
       />
-      <Box flex={1} display="flex" flexDirection="column" gap={2}>
+      <Box flex={1} display="flex" flexDirection="column" gap={2} sx={{ overflowY: 'auto', pr: 0.5 }}>
         {usersToDisplay.length > 0 ? (
           usersToDisplay.map((u) => (
             <StyledUserCard

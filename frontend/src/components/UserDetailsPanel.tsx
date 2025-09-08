@@ -39,6 +39,7 @@ interface Skill {
 
 interface UserDetailsPanelProps {
   selectedUser: User | null;
+  uploadMessage: string | null; 
   isProcessing: boolean;
   downloadFilename: string | null;
   userLoggedHours: number | null;
@@ -67,6 +68,7 @@ const getInitials = (name: string = "") => {
 const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
   selectedUser,
   isProcessing,
+  uploadMessage,
   downloadFilename,
   userLoggedHours,
   hoursLoading,
@@ -102,7 +104,7 @@ const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
 
   if (!selectedUser) {
     return (
-      <Box flex={2} p={3} display="flex" flexDirection="column" justifyContent="center" alignItems="center" sx={{ height: 'calc(100vh - 100px)' }}>
+      <Box flex={2} p={3} display="flex" flexDirection="column" justifyContent="center" alignItems="center" sx={{ height: '100%' }}>
         <Paper elevation={3} sx={{ p: 4, borderRadius: 2, textAlign: 'center' }}>
           <PersonSearch color="primary" sx={{ fontSize: 60, mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
@@ -117,7 +119,7 @@ const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
   }
 
   return (
-    <Box flex={2} p={3} sx={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
+    <Box flex={2} p={3} sx={{ height:'100%', overflowY: 'auto' }}>
       {/* Profile Header - No changes here */}
       <Box display="flex" alignItems="center" mb={3}>
         <Avatar sx={{ width: 64, height: 64, bgcolor: 'primary.main', fontSize: '1.75rem' }}>
@@ -187,6 +189,11 @@ const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
                 {selectedFileName || "No file chosen"}
               </Typography>
             </Box>
+            {uploadMessage && !selectedFileName && (
+    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, ml: 0.5 }}>
+      Status: {uploadMessage}
+    </Typography>
+)}
             <Button
                 type="submit"
                 variant="contained"

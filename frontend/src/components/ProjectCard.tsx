@@ -109,11 +109,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDeleteClick,onEdit
           {project.accountName}
         </Typography>
         <Grid container alignItems="center" spacing={1} sx={{ mt: 2 }}>
-          {/* <Grid item xs={10}>
-            <LinearProgress variant="determinate" value={project.progress} /> 
-             <LinearProgress variant="determinate" value={project.progress} color={progressColor} /> 
-
-          </Grid> */}
+         
           <Grid size={2}>
             <Typography variant="body2">{project.progress}%</Typography>
           </Grid>
@@ -134,10 +130,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDeleteClick,onEdit
 
         
         <Grid container sx={{ mt: 2 }}>
-          {/* <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">Logged Hours</Typography>
-            <Typography variant="body1">{project.loggedHours}/{project.totalHours}hrs</Typography>
-          </Grid> */}
+         
           <Grid size={11} textAlign="right">
             <Typography variant="body2" color="text.secondary">End Date</Typography>
             <Typography variant="body1">{project.endDate}</Typography>

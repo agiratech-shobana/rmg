@@ -83,7 +83,11 @@ const Sidebar: React.FC<SidebarProps> = ({ selected, onSelect }) => {
       <Button
         onClick={handleLogout}
         sx={{
-          marginTop: "auto",
+          // marginTop: "auto",
+          marginBottom: "80px",
+          width: '100%',
+          justifyContent: 'flex-start',
+
           padding: "10px 15px",
           cursor: "pointer",
           color: "red"

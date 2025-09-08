@@ -9,19 +9,7 @@ import axios from 'axios';
 import '../styles/AppProjectModal.css';
 import type { ProjectSummary, ProjectDetails,ProjectFormData } from '../types/project';
 
-// Helper function to get custom field value by name
-// const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
-//   return project.custom_fields.find(cf => cf.name === fieldName)?.value || '';
-// };
 
-// This new helper is case-insensitive and returns the raw value from the API
-// const getCustomFieldValue = (project: ProjectDetails, fieldName: string) => {
-//   const field = project.custom_fields.find(
-//     cf => cf.name.toLowerCase() === fieldName.toLowerCase()
-//   );
-//   // Return the actual value (which could be a string, an array, etc.) or undefined if not found
-//   return field?.value;
-// };
 
 
 const getCustomFieldValue = (project: ProjectDetails, fieldName: string): string | string[] | undefined => {

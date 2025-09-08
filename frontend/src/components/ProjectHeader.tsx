@@ -4,9 +4,7 @@
 import React from 'react';
 import { Paper, Card, Grid, Typography, Box, CardContent } from '@mui/material';
 import type { ProjectDetails, Membership, CustomField } from '../types/project';
-// const getCustomFieldValue = (fields: CustomField[], fieldName: string) => {
-//     return fields.find(f => f.name === fieldName)?.value || 'N/A';
-// };
+
 
 const getCustomFieldValue = (fields: CustomField[], fieldName: string): string => {
     const field = fields.find(f => f.name.toLowerCase() === fieldName.toLowerCase());

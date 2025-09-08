@@ -4,8 +4,8 @@
 // src/App.tsx
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";      // <-- IMPORT
-import ProtectedRoute from "./components/ProtectedRoute"; // <-- IMPORT
+import { AuthProvider } from "./context/AuthContext";      
+import ProtectedRoute from "./components/ProtectedRoute"; 
 
 // Your Page Components
 import Home from "./pages/Home";  
