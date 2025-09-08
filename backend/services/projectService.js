@@ -124,7 +124,7 @@ async function addMemberToProject(projectId, memberData) {
 
 
 async function fetchEmployeesFromDB() {
-  const sql = "SELECT id, name, role FROM employees ORDER BY name ASC";
+  const sql = "SELECT id, name FROM employees ORDER BY name ASC";
   try {
     const [rows] = await dbPool.query(sql);
     return rows;

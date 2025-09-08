@@ -12,9 +12,7 @@ const skillService = require("../services/skillService");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-// =================================================================
-// MAIN ROUTES
-// =================================================================
+
 
 router.post(
   "/process/:userId",
@@ -85,7 +83,7 @@ router.get("/employee/:userId", async (req, res) => {
       skills: skillsArray,
     });
   } catch (error) {
-    console.error(`❌ CRITICAL ERROR fetching resume data for employee ${userId}:`, error);
+    console.error(` CRITICAL ERROR fetching resume data for employee ${userId}:`, error);
     res.status(500).json({ error: "Database query failed" });
   }
 });

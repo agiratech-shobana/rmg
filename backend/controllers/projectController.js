@@ -229,14 +229,17 @@ exports.getUserMemberships = async (req, res) => {
   }
 };
 
+
+
 // GET /api/skills/employee-count
 exports.getEmployeeCountBySkill = async (req, res) => {
   try {
     const [results] = await dbpool.query(
-      `SELECT s.name, COUNT(es.employee_id) AS employeeCount
+      `SELECT s.name, 
+              COUNT(es.employee_id) AS employeeCount
        FROM skills s
-       JOIN employee_skills es ON s.id = es.skill_id
-       GROUP BY s.id
+       LEFT JOIN employee_skills es ON s.id = es.skill_id
+       GROUP BY s.id, s.name
        ORDER BY employeeCount DESC`
     );
     res.json(results);
@@ -245,6 +248,15 @@ exports.getEmployeeCountBySkill = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch skill data.' });
   }
 };
+
+
+
+
+
+
+
+
+
 
 // POST /api/skills
 exports.addSkill = async (req, res) => {

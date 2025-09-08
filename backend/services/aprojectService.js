@@ -11,7 +11,7 @@ let cachedRoles = [];
 
 async function updateUsersAndRolesCache() {
   try {
-    console.log("🔄 Cron job: Fetching latest users and roles...");
+    console.log(" Cron job: Fetching latest users and roles...");
     
     // Fetch both users and roles from the API
     const rawUsers = await fetchAll("users.json");
@@ -33,15 +33,15 @@ async function updateUsersAndRolesCache() {
         "INSERT INTO employees (id, name, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), email=VALUES(email)",
         [user.id, user.name, user.email],
         (err) => {
-          if (err) console.error("❌ DB insert error:", err);
+          if (err) console.error(" DB insert error:", err);
         }
       );
     }
 
-    console.log(`✅ Updated users cache: ${cachedUsers.length} users`);
-    console.log(`✅ Updated roles cache: ${cachedRoles.length} roles`);
+    console.log(` Updated users cache: ${cachedUsers.length} users`);
+    console.log(` Updated roles cache: ${cachedRoles.length} roles`);
   } catch (err) {
-    console.error("❌ Failed to update cache:", err);
+    console.error(" Failed to update cache:", err);
   }
 }
 

@@ -33,10 +33,8 @@ async function fetchAll(endpoint) {
       if (!res.ok) throw new Error(`API fetch failed with status ${res.status}`);
       
       const json = await res.json();
-      // It dynamically finds the key in the response that contains the array of data.
       const dataKey = Object.keys(json).find(key => Array.isArray(json[key]));
       if (!dataKey) {
-        // This handles cases where the entire response is an array
         if (Array.isArray(json)) {
             allData = allData.concat(json);
             break; 
@@ -126,8 +124,7 @@ async function deleteData(endpoint) {
             throw new Error(`API DELETE failed with status ${res.status}: ${errorBody}`);
         }
 
-        // DELETE requests typically do not have a response body,
-        // so we can just return a success status.
+      
         return res.status;
 
     } catch (error) {

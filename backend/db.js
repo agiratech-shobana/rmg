@@ -1,24 +1,6 @@
 
 
 
-// const mysql = require("mysql2");
-
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",       // change if needed
-//   password: "Root@1234", // your password
-//   database: "rmg",    // change to your DB name
-// });
-
-// db.connect((err) => {
-//   if (err) {
-//     console.error("❌ Database connection failed:", err);
-//     return;
-//   }
-//   console.log("✅ Connected to MySQL Database");
-// });
-
-// module.exports = db;
 
 
 
@@ -40,7 +22,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-console.log("✅ Connected to MySQL Database (Pool supports both Promises and Callbacks).");
+console.log(" Connected to MySQL Database (Pool supports both Promises and Callbacks).");
 
 // Export the pool. Any code can now use this.
 module.exports = pool;
