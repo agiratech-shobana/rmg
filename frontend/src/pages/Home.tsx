@@ -1,17 +1,15 @@
 
 import React from "react";
 import Agiralogo from "../assets/agira-logo.png";
-const API_URL = import.meta.env.VITE_API_URL;
 
 // const Home: React.FC = () => {
 //   const handleMicrosoftLogin = () => {
 //     window.location.href = "http://localhost:5000/auth/login";
 //   };
-
-const handleMicrosoftLogin = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL.replace('/api', '')}/auth/login`;
-};
-
+const Home: React.FC = () => {
+  const handleMicrosoftLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL.replace('/api', '')}/auth/login`;
+  };
 
   return (
     <div

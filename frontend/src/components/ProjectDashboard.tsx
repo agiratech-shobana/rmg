@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+
 import type { ProjectSummary ,ProjectFormData} from '../types/project';
 
 // --- MOCK/PLACEHOLDER COMPONENTS to resolve import errors ---
@@ -210,7 +211,7 @@ const ProjectDashboard: React.FC = () => {
     });
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -267,19 +268,19 @@ const ProjectDashboard: React.FC = () => {
       {/* --- RESPONSIVE STATS & SEARCH GRID --- */}
       <Grid container spacing={2} sx={{ mb: 4 }} alignItems="center">
         {/* Stat Cards */}
-        <Grid item xs={12} sm={4} md={3}>
+        <Grid size={3}>
           <Box p={2} border={1} borderColor="grey.300" borderRadius={2} textAlign="center">
             <Typography variant="h6">Total Projects</Typography>
             <Typography variant="h3" color="primary">{totalCount}</Typography>
           </Box>
         </Grid>
-        <Grid item xs={6} sm={4} md={3}>
+        <Grid size={3}>
           <Box p={2} border={1} borderColor="grey.300" borderRadius={2} textAlign="center">
             <Typography variant="h6">Ongoing</Typography>
             <Typography variant="h3" color="warning.main">{ongoingCount}</Typography>
           </Box>
         </Grid>
-        <Grid item xs={6} sm={4} md={3}>
+        <Grid size={3}>
           <Box p={2} border={1} borderColor="grey.300" borderRadius={2} textAlign="center">
             <Typography variant="h6">Finished</Typography>
             <Typography variant="h3" color="success.main">{finishedCount}</Typography>
@@ -287,7 +288,7 @@ const ProjectDashboard: React.FC = () => {
         </Grid>
 
         {/* Search Field */}
-        <Grid item xs={12} md={3}>
+        <Grid size={3}>
             <TextField
               fullWidth
               label="Search Projects"
@@ -318,7 +319,7 @@ const ProjectDashboard: React.FC = () => {
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
             // Full width on mobile, 2 per row on tablet, 3 per row on desktop
-            <Grid item key={project.id} xs={12} sm={6} md={4}>
+            <Grid size={4}>
               <ProjectCard 
                 project={project}
                 onDeleteClick={handleDeleteClick} 
