@@ -7,7 +7,7 @@ const cors = require('cors');
 const cookieSession = require('cookie-session');
 const path = require('path');
 const fs = require('fs');
-
+const allowedOrigins = ["https://rmg-gilt.vercel.app"]; // Add your allowed origins here
 
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
@@ -43,10 +43,11 @@ const {
 } = process.env;
 
 const app = express();
+
 app.use(express.json());
 // CORS
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: allowedOrigins,
   credentials: true
 }));
 
