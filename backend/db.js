@@ -28,21 +28,19 @@
 // module.exports = pool;
 
 
-const mysql = require("mysql2/promise");
-
+const mysql = require("mysql2"); // NOTE: no /promise
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,           // Railway host
-  user: process.env.DB_USER,           // Railway user
-  password: process.env.DB_PASSWORD,   // Railway password
-  database: process.env.DB_NAME,       // Railway database name
-  port: parseInt(process.env.DB_PORT), // Railway port (convert to number!)
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT, 10),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
-console.log("Connected to MySQL Database (Pool supports both Promises and Callbacks).");
-
+// Now db.query(sql, params, callback) works everywhere
 module.exports = pool;
 
 
