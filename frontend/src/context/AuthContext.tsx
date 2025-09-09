@@ -68,21 +68,14 @@ const AuthContext = createContext<AuthContextType>({ user: null, loading: true }
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL; // get backend URL from .env
-    axios.get(`${apiUrl}/auth/user`, { withCredentials: true })
-      .then(res => {
-        setUser(res.data);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
+useEffect(() => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  axios.get(`${apiUrl}/auth/user`, { withCredentials: true })
+    .then(res => setUser(res.data))
+    .catch(() => setUser(null))
+    .finally(() => setLoading(false));
+}, []);
+  
   const value = { user, loading };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
