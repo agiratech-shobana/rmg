@@ -71,7 +71,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Mount routes
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api',projectRoutes)
 // app.use('/resumes', resumeRoutes); // mount resume routes
