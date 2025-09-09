@@ -35,18 +35,57 @@
 // export default Dashboard;
 
 
+// import { useAuth } from "../context/AuthContext";
+
+// const Dashboard = () => {
+//   const { user, loading } = useAuth();
+
+//   if (loading) {
+//     return <p>Loading...</p>;
+//   }
+
+//   if (!user) {
+//     return <p>You are not logged in.</p>;
+//   }
+
+//   return (
+//     <div style={{ padding: 20 }}>
+//       <h1>Welcome, {user.name}</h1>
+//       <p>Email: {user.email}</p>
+//       <p>OID: {user.oid}</p>
+
+//       <div style={{ marginTop: 40 }}>
+//         <h2>Coming Soon...</h2>
+//         <p>Your dashboard content will be here.</p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    // fetch cached users and roles from backend
+    axios.get(`${import.meta.env.VITE_API_URL}/users`, { withCredentials: true })
+      .then(res => setUsers(res.data))
+      .catch(err => console.error(err));
 
-  if (!user) {
-    return <p>You are not logged in.</p>;
-  }
+    axios.get(`${import.meta.env.VITE_API_URL}/roles`, { withCredentials: true })
+      .then(res => setRoles(res.data.roles))
+      .catch(err => console.error(err));
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>You are not logged in.</p>;
 
   return (
     <div style={{ padding: 20 }}>
@@ -55,8 +94,8 @@ const Dashboard = () => {
       <p>OID: {user.oid}</p>
 
       <div style={{ marginTop: 40 }}>
-        <h2>Coming Soon...</h2>
-        <p>Your dashboard content will be here.</p>
+        <h2>Employees</h2>
+      
       </div>
     </div>
   );

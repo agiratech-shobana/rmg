@@ -46,6 +46,7 @@
 
 
 
+// src/context/AuthContext.tsx
 import { createContext, useState, useEffect, useContext } from "react";
 import type { ReactNode } from "react";
 import axios from "axios";
@@ -68,10 +69,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL; // e.g., https://rmg-5.onrender.com/api
+    const apiUrl = import.meta.env.VITE_API_URL; // Should be set in Vercel env variables
     axios
       .get(`${apiUrl}/auth/user`, { withCredentials: true })
-      .then((res) => {
+      .then(res => {
         setUser(res.data);
       })
       .catch(() => {
@@ -87,6 +88,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// Custom hook to access AuthContext
+export const useAuth = () => useContext(AuthContext);
