@@ -4,7 +4,7 @@
 
 const cron = require("node-cron");
 const { fetchAll } = require('../utils/apiClient');
-const db = require('../db'); // Assuming this file exists and exports a connection
+const pool = require('../db'); // Assuming this file exists and exports a connection
 
 let cachedUsers = [];
 let cachedRoles = [];
@@ -28,14 +28,25 @@ async function updateUsersAndRolesCache() {
     cachedRoles = rawRoles.map(r => ({ id: r.id, name: r.name }));
 
     // DB insertion logic (make sure 'db' connection is working)
-    for (const user of cachedUsers) {
-      db.query(
-        "INSERT INTO employees (id, name, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), email=VALUES(email)",
-        [user.id, user.name, user.email],
-        (err) => {
-          if (err) console.error(" DB insert error:", err);
-        }
-      );
+    // for (const user of cachedUsers) {
+    //   db.query(
+    //     "INSERT INTO employees (id, name, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), email=VALUES(email)",
+    //     [user.id, user.name, user.email],
+    //     (err) => {
+    //       if (err) console.error(" DB insert error:", err);
+    //     }
+    //   );
+    // }
+
+       for (const user of cachedUsers) {
+      try {
+        await pool.query(
+          "INSERT INTO employees (id, name, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), email=VALUES(email)",
+          [user.id, user.name, user.email]
+        );
+      } catch (err) {
+        console.error(" DB insert error:", err.message);
+      }
     }
 
     console.log(` Updated users cache: ${cachedUsers.length} users`);
