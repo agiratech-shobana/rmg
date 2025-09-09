@@ -28,24 +28,7 @@
 // module.exports = pool;
 
 
-// const mysql = require("mysql2/promise"); // NOTE: no /promise
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   port: parseInt(process.env.DB_PORT, 10),
-//   waitForConnections: true,
-//   connectionLimit: 5,
-//   queueLimit: 0
-// });
-
-// // Now db.query(sql, params, callback) works everywhere
-// module.exports = pool;
-
-
-const mysql = require("mysql2/promise");
-
+const mysql = require("mysql2/promise"); // NOTE: no /promise
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -54,13 +37,13 @@ const pool = mysql.createPool({
   port: parseInt(process.env.DB_PORT, 10),
   waitForConnections: true,
   connectionLimit: 5,
-  queueLimit: 0,
-  ssl: {
-    rejectUnauthorized: true
-  }
+  queueLimit: 0
 });
 
+// Now db.query(sql, params, callback) works everywhere
 module.exports = pool;
+
+
 
 
 
