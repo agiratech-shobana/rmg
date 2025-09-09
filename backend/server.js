@@ -58,13 +58,12 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   // maxAge: 3 * 60 * 1000 ,// 3 minutes in milliseconds
 
-  // sameSite: "lax",
-  // secure: false
-
- secure: process.env.NODE_ENV === 'production', // IMPORTANT FOR HTTPS
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' 
+  sameSite: "lax",
+  secure: false
 
 
+
+  
 }));
 
 app.set("view engine", "ejs");

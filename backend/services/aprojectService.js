@@ -46,6 +46,7 @@ async function updateUsersAndRolesCache() {
         );
       } catch (err) {
         console.error(" DB insert error:", err.message);
+        console.log(err.stack);
       }
     }
 
