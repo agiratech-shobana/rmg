@@ -58,15 +58,20 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   // maxAge: 3 * 60 * 1000 ,// 3 minutes in milliseconds
 
-  sameSite: "lax",
-  secure: false
+  // sameSite: "lax",
+  // secure: false
+
+ secure: process.env.NODE_ENV === 'production', // IMPORTANT FOR HTTPS
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' 
+
+
 }));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Mount routes
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api',projectRoutes)
 // app.use('/resumes', resumeRoutes); // mount resume routes
