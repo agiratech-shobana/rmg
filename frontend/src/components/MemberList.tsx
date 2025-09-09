@@ -47,7 +47,7 @@ const handleConfirmation = (membershipId: number, memberName: string) => {
         );
     };
 
-const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+const handleSnackbarClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway' && snackbarState.isConfirmation) {
         return;
     }
@@ -63,7 +63,9 @@ const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: stri
     setDeletingId(snackbarState.actionId); // Show the loading spinner
 
         try {
-            await axios.delete(`http://localhost:5000/api/projects/${projectId}/memberships/${snackbarState.actionId}`);
+            // await axios.delete(`http://localhost:5000/api/projects/${projectId}/memberships/${snackbarState.actionId}`);
+            await axios.delete(`${import.meta.env.VITE_API_URL}/projects/${projectId}/memberships/${snackbarState.actionId}`);
+
 
             onMemberDeleted(snackbarState.actionId);
             

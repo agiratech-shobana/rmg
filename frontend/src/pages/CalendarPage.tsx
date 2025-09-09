@@ -6,6 +6,9 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventInput } from "@fullcalendar/core";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 
 interface Project {
   id: number;
@@ -22,7 +25,9 @@ const ProjectCalendar: React.FC = () => {
  useEffect(() => {
     const loadProjects = async () => {
       try {
-        const res = await axios.get<Project[]>("http://localhost:5000/api/projects");
+        // const res = await axios.get<Project[]>("http://localhost:5000/api/projects");
+        const res = await axios.get<Project[]>(`${API_URL}/projects`);
+
         const projects = res.data;
 
         const today = new Date();
