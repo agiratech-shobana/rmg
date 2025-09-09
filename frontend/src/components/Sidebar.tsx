@@ -15,14 +15,10 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ selected, onSelect }) => {
   const navigate = useNavigate();
 
-  // const handleLogout = () => {
-  //   window.location.href = "http://localhost:5000/auth/logout";
-  // };
-  
   const handleLogout = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL.replace('/api', '')}/auth/logout`;
-};
-
+    window.location.href = "http://localhost:5000/auth/logout";
+  };
+  
   const menuItems = [
     { name: "Dashboard", icon: <FaTachometerAlt />, path: "/dashboard" },
     { name: "Calendar", icon: <FaCalendarAlt />, path: "/calendar" },

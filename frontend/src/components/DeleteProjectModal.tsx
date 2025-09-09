@@ -41,8 +41,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({ open, onClose, 
         setError(null);
 
         try {
-            // await axios.delete(`http://localhost:5000/api/projects/${project.id}`, {
-            await axios.delete(`${import.meta.env.VITE_API_URL}/projects/${project.id}`, {
+            await axios.delete(`http://localhost:5000/api/projects/${project.id}`, {
                 data: { identifier: identifierInput }
             });
             

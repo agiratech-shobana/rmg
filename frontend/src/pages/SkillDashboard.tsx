@@ -47,9 +47,7 @@ const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; sever
     const fetchSkillData = async () => {
         try {
             setLoading(true);
-            // const response = await axios.get('http://localhost:5000/api/skills/employee-count');
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/skills/employee-count`);
-
+            const response = await axios.get('http://localhost:5000/api/skills/employee-count');
             setSkillData(response.data);
             setLoading(false);
         } catch (err) {
@@ -67,8 +65,7 @@ const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; sever
         setSubmitting(true);
         try {
             // FIX: The backend route must be handled by you. We are creating it now.
-            // const response = await axios.post('http://localhost:5000/api/skills', { name: newSkillName.trim() });
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/skills`, { name: newSkillName.trim() });
+            const response = await axios.post('http://localhost:5000/api/skills', { name: newSkillName.trim() });
             setSnackbar({ open: true, message: response.data.message, severity: 'success' });
             setAddSkillOpen(false); // Close the dialog
             setNewSkillName(''); // Clear the input

@@ -15,8 +15,6 @@ import axios from "axios";
 // Import the new components
 import UserListComponent from "../components/UserListComponent";
 import UserDetailsPanel from "../components/UserDetailsPanel";
-const API_URL = import.meta.env.VITE_API_URL;
-
 
 // Keep interfaces that are used across components here in the parent
 interface User {
@@ -69,9 +67,7 @@ const UsersPage: React.FC = () => {
   useEffect(() => {
     const fetchUsersAndSelect = async () => {
       try {
-        // const response = await axios.get("http://localhost:5000/api/users");
-        const response = await axios.get(`${API_URL}/users`);
-
+        const response = await axios.get("http://localhost:5000/api/users");
         const usersData = response.data;
         setUsers(usersData);
 
@@ -106,9 +102,7 @@ const UsersPage: React.FC = () => {
     setDownloadFilename(null);
     
     axios
-      // .get(`http://localhost:5000/api/resumes/employee/${selectedUser.id}`)
-      .get(`${API_URL}/resumes/employee/${selectedUser.id}`)
-
+      .get(`http://localhost:5000/api/resumes/employee/${selectedUser.id}`)
       .then((res) => {
         const data = res.data;
         if (data.resume) {
@@ -132,18 +126,14 @@ const UsersPage: React.FC = () => {
     const fetchUserDetails = async () => {
       // Fetch Logged Hours
       setHoursLoading(true);
-      // axios.get(`http://localhost:5000/api/users/${selectedUser.id}/logged-hours`)
-      axios.get(`${API_URL}/users/${selectedUser.id}/logged-hours`)
-
+      axios.get(`http://localhost:5000/api/users/${selectedUser.id}/logged-hours`)
         .then(res => setUserLoggedHours(res.data.loggedHours))
         .catch(err => { console.error("Failed to fetch logged hours:", err); setUserLoggedHours(null); })
         .finally(() => setHoursLoading(false));
 
       // Fetch Last Project
       setLastProjectLoading(true);
-      // axios.get(`http://localhost:5000/api/users/${selectedUser.id}/memberships`)
-      axios.get(`${API_URL}/users/${selectedUser.id}/memberships`)
-
+      axios.get(`http://localhost:5000/api/users/${selectedUser.id}/memberships`)
         .then(res => {
           const memberships = res.data?.user?.memberships;
           setLastProject(memberships?.length > 0 ? memberships[memberships.length - 1].project : null);
@@ -153,9 +143,7 @@ const UsersPage: React.FC = () => {
         
       // Fetch Skills
       setSkillsLoading(true);
-      // axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`)
-      axios.get(`${API_URL}/resumes/employees/${selectedUser.id}/skills`)
-
+      axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`)
         .then(res => setEmployeeSkills(res.data.employeeSkills || []))
         .catch(err => console.error("Failed to fetch skills:", err))
         .finally(() => setSkillsLoading(false));
@@ -183,7 +171,7 @@ const UsersPage: React.FC = () => {
     setOpenSnackbar(true);
   };
 
-  const handleCloseSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') return;
     setOpenSnackbar(false);
   };
@@ -208,12 +196,12 @@ const UsersPage: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${API_URL}/resumes/process/${selectedUser.id}`,
+        `http://localhost:5000/api/resumes/process/${selectedUser.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       handleShowSnackbar("Resume processed successfully!", 'success');
-      const employeeSkillsRes = await axios.get(`${API_URL}/resumes/employees/${selectedUser.id}/skills`);
+      const employeeSkillsRes = await axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`);
       setEmployeeSkills(employeeSkillsRes.data.employeeSkills || []);
       setDownloadFilename(response.data.downloadFilename || null);
     }
@@ -237,10 +225,10 @@ const UsersPage: React.FC = () => {
     
     setAddSkillLoading(true);
     try {
-      await axios.post(`${API_URL}/resumes/employees/${selectedUser.id}/add-skill`, { skillName: newSkillName.trim() });
+      await axios.post(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/add-skill`, { skillName: newSkillName.trim() });
       handleShowSnackbar("Skill added successfully!", 'success');
       
-      const employeeSkillsRes = await axios.get(`${API_URL}/resumes/employees/${selectedUser.id}/skills`);
+      const employeeSkillsRes = await axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`);
       setEmployeeSkills(employeeSkillsRes.data.employeeSkills || []);
       
       setNewSkillName('');

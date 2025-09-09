@@ -16,7 +16,6 @@ import {
   CardContent,
   CardHeader,
 } from "@mui/material";
-const API_URL = import.meta.env.VITE_API_URL;
 
 // Import the icons we'll be using
 import { MailOutline, AccessTime, WorkOutline, PersonSearch, UploadFile, Psychology } from '@mui/icons-material';
@@ -207,8 +206,7 @@ const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
               <Box mt={3}>
                 <Typography fontWeight="bold" variant="subtitle2">Formatted Resume Ready:</Typography>
                 <Button
-                  // href={`http://localhost:5000/api/resumes/download/${downloadFilename}`}
-                  href={`${API_URL}/resumes/download/${downloadFilename}`}
+                  href={`http://localhost:5000/api/resumes/download/${downloadFilename}`}
                   target="_blank"
                   variant="outlined"
                   color="secondary"

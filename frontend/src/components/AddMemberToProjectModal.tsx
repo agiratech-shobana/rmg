@@ -7,7 +7,6 @@ import {
   List, ListItem, ListItemIcon, Checkbox, ListItemText, CircularProgress, Box, Typography, Divider, Snackbar, Alert,TextField
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-const baseURL = import.meta.env.VITE_API_URL;
 import type { Membership, Role } from '../types/project';
 
 // This is the shape of the user data from our fast /api/employees endpoint
@@ -46,10 +45,8 @@ const AddMemberToProjectModal: React.FC<AddMemberToProjectModalProps> = ({ open,
     useEffect(() => {
         if (open) {
             setLoading(true);
-            // const usersPromise = axios.get('http://localhost:5000/api/employees');
-            // const rolesPromise = axios.get('http://localhost:5000/api/roles');
-            const usersPromise = axios.get(`${baseURL}/employees`);
-            const rolesPromise = axios.get(`${baseURL}/roles`);
+            const usersPromise = axios.get('http://localhost:5000/api/employees');
+            const rolesPromise = axios.get('http://localhost:5000/api/roles');
             
             Promise.all([usersPromise, rolesPromise])
                 .then(([usersResponse, rolesResponse]) => {
@@ -135,9 +132,7 @@ const AddMemberToProjectModal: React.FC<AddMemberToProjectModalProps> = ({ open,
                 user_id: userId, 
                 role_ids: Array.from(selectedRoleIds) 
             };
-            // return axios.post(`http://localhost:5000/api/projects/${projectId}/members`, payload);
-            return axios.post(`${import.meta.env.VITE_API_URL}/projects/${projectId}/members`, payload);
-
+            return axios.post(`http://localhost:5000/api/projects/${projectId}/members`, payload);
         });
 
         try {

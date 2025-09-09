@@ -4,8 +4,6 @@ import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Box, CircularProgress, Alert,Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-const API_URL = import.meta.env.VITE_API_URL;
-
 
 
 
@@ -46,9 +44,9 @@ const ProjectDetailPage: React.FC = () => {
     try {
       setLoading(true);
 
-      const projectPromise = axios.get(`${API_URL}/projects/${id}`);
-      const membersPromise = axios.get(`${API_URL}/projects/${id}/members`);
-      const hoursPromise = axios.get(`${API_URL}/projects/${id}/logged-hours`);
+      const projectPromise = axios.get(`http://localhost:5000/api/projects/${id}`);
+      const membersPromise = axios.get(`http://localhost:5000/api/projects/${id}/members`);
+      const hoursPromise = axios.get(`http://localhost:5000/api/projects/${id}/logged-hours`);
 
       const [projectResponse, membersResponse, hoursResponse] = await Promise.all([
         projectPromise,
