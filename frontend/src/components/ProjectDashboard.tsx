@@ -594,7 +594,7 @@ const ProjectDashboard: React.FC = () => {
              <Box sx={{xs:12,sm:6,md:4,lg:3}}>
         <TextField
           // fullWidth
-          style={{ width: '300px', marginLeft: '300px' ,marginTop:'40px', top: '70px'}}
+          // style={{ width: '300px', marginLeft: '900px' ,marginTop:'35px', top: '70px'}}
           label="Search Projects by Name or Account Name"
           variant="outlined"
           value={searchQuery}
