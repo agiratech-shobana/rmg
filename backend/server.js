@@ -173,9 +173,10 @@ app.use(cookieSession({
   name: 'session',
   keys: [SESSION_SECRET],
   maxAge: 24 * 60 * 60 * 1000, // 1 day
-  sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
-  secure: NODE_ENV === 'production', // true if deployed on https
-  httpOnly: true
+  httpOnly: true,
+    secure: NODE_ENV === 'production',   // Render uses HTTPS → true
+    sameSite: NODE_ENV === 'production' ? 'none' : 'lax'
+  
 }));
 
 // View engine setup
