@@ -34,7 +34,10 @@ if (!fs.existsSync(formattedDir)) {
 
 
 
-
+const whitelist = [
+  process.env.FRONTEND_URL, // Your Vercel URL for production
+  process.env.DEV_FRONTEND_URL // Your localhost URL for development
+];
 
 
 const {
@@ -45,10 +48,30 @@ const {
 const app = express();
 app.use(express.json());
 // CORS
-app.use(cors({
-  origin: FRONTEND_URL,
+// app.use(cors({
+//   origin: FRONTEND_URL,
+//   credentials: true
+// }));
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // The `!origin` allows requests from tools like Postman
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+
+
+
+
+
+
 
 // Session
 app.use(cookieSession({
@@ -57,8 +80,15 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   // maxAge: 3 * 60 * 1000 ,// 3 minutes in milliseconds
 
-  sameSite: "lax",
-  secure: false
+  // sameSite: "lax",
+  // secure: false
+ sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  secure: process.env.NODE_ENV === 'production' ? true : false,
+  httpOnly: true // Good security practice
+
+
+
+
 }));
 
 app.set("view engine", "ejs");
