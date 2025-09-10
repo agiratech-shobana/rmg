@@ -4,8 +4,7 @@
 
 // frontend/src/components/ProjectCard.tsx
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, LinearProgress,  Chip, IconButton, Menu, MenuItem, Box } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Card, CardContent, Typography, LinearProgress,  Chip, IconButton, Menu, MenuItem, Box ,Grid} from '@mui/material';
 
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -77,7 +76,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDeleteClick,onEdit
   return (
     <StyledCard>
       <CardContent>
-        <Grid container justifyContent="space-between" alignItems="center">
+        <Grid container justifyContent="space-between" alignItems="center" size={{xs:12,sm:6,md:4,lg:3}}>
           <Typography variant="h6" component="div">
             <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               {project.name}
