@@ -22,7 +22,7 @@ const ProjectCalendar: React.FC = () => {
  useEffect(() => {
     const loadProjects = async () => {
       try {
-        const res = await axios.get<Project[]>("http://localhost:5000/api/projects");
+        const res = await axios.get<Project[]>(`${import.meta.env.VITE_API_BASE_URL}/api/projects`);
         const projects = res.data;
 
         const today = new Date();

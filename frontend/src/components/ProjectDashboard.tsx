@@ -129,7 +129,7 @@
 
 //   const fetchProjects = async () => {
 //     try {
-//       const response = await axios.get('http://localhost:5000/api/projects', { withCredentials: true });
+//       const response = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/projects', { withCredentials: true });
 //     //    const response = await axios.get(
 //     //   `${import.meta.env.VITE_API_URL}/projects`,   
 //     //   { withCredentials: true }
@@ -433,7 +433,7 @@ const ProjectDashboard: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/projects', { withCredentials: true });
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/projects`, { withCredentials: true });
       setProjects(response.data);
     } catch (err) {
       setError('Failed to fetch projects. Please check the backend.');
@@ -514,7 +514,7 @@ const ProjectDashboard: React.FC = () => {
     });
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -547,7 +547,7 @@ const ProjectDashboard: React.FC = () => {
 
 
 
-   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+   const handleSnackbarClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }

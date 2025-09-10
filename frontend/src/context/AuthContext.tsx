@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // This runs only once when the app starts to check for an existing session
-    axios.get("http://localhost:5000/auth/user", { withCredentials: true })
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/user`, { withCredentials: true })
       .then(res => {
         setUser(res.data);
       })

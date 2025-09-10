@@ -44,9 +44,9 @@ const ProjectDetailPage: React.FC = () => {
     try {
       setLoading(true);
 
-      const projectPromise = axios.get(`http://localhost:5000/api/projects/${id}`);
-      const membersPromise = axios.get(`http://localhost:5000/api/projects/${id}/members`);
-      const hoursPromise = axios.get(`http://localhost:5000/api/projects/${id}/logged-hours`);
+      const projectPromise = axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${id}`);
+      const membersPromise = axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${id}/members`);
+      const hoursPromise = axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${id}/logged-hours`);
 
       const [projectResponse, membersResponse, hoursResponse] = await Promise.all([
         projectPromise,

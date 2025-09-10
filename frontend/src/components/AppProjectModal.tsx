@@ -71,7 +71,7 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ open, onClose, onNext
       setLoading(true);
       const fetchDetails = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/projects/${project.id}`, { withCredentials: true });
+          const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${project.id}`, { withCredentials: true });
           console.log("RECEIVED PROJECT DATA:", JSON.stringify(response.data, null, 2));
           const fullProject: ProjectDetails = response.data.project;
 
@@ -192,7 +192,7 @@ setTechStack(Array.isArray(techStackValue) ? techStackValue : []);
       };
 
       try {
-        await axios.put(`http://localhost:5000/api/projects/${project.id}`, payload, { withCredentials: true });
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${project.id}`, payload, { withCredentials: true });
         onProjectSaved?.(); // Call the parent handler to re-fetch
         onClose();
       } 

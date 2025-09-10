@@ -67,7 +67,7 @@ const UsersPage: React.FC = () => {
   useEffect(() => {
     const fetchUsersAndSelect = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users");
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users`);
         const usersData = response.data;
         setUsers(usersData);
 
@@ -102,7 +102,7 @@ const UsersPage: React.FC = () => {
     setDownloadFilename(null);
     
     axios
-      .get(`http://localhost:5000/api/resumes/employee/${selectedUser.id}`)
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/employee/${selectedUser.id}`)
       .then((res) => {
         const data = res.data;
         if (data.resume) {
@@ -126,14 +126,14 @@ const UsersPage: React.FC = () => {
     const fetchUserDetails = async () => {
       // Fetch Logged Hours
       setHoursLoading(true);
-      axios.get(`http://localhost:5000/api/users/${selectedUser.id}/logged-hours`)
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${selectedUser.id}/logged-hours`)
         .then(res => setUserLoggedHours(res.data.loggedHours))
         .catch(err => { console.error("Failed to fetch logged hours:", err); setUserLoggedHours(null); })
         .finally(() => setHoursLoading(false));
 
       // Fetch Last Project
       setLastProjectLoading(true);
-      axios.get(`http://localhost:5000/api/users/${selectedUser.id}/memberships`)
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${selectedUser.id}/memberships`)
         .then(res => {
           const memberships = res.data?.user?.memberships;
           setLastProject(memberships?.length > 0 ? memberships[memberships.length - 1].project : null);
@@ -143,7 +143,7 @@ const UsersPage: React.FC = () => {
         
       // Fetch Skills
       setSkillsLoading(true);
-      axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`)
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/employees/${selectedUser.id}/skills`)
         .then(res => setEmployeeSkills(res.data.employeeSkills || []))
         .catch(err => console.error("Failed to fetch skills:", err))
         .finally(() => setSkillsLoading(false));
@@ -171,7 +171,7 @@ const UsersPage: React.FC = () => {
     setOpenSnackbar(true);
   };
 
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') return;
     setOpenSnackbar(false);
   };
@@ -196,12 +196,12 @@ const UsersPage: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/resumes/process/${selectedUser.id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/resumes/process/${selectedUser.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       handleShowSnackbar("Resume processed successfully!", 'success');
-      const employeeSkillsRes = await axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`);
+      const employeeSkillsRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/employees/${selectedUser.id}/skills`);
       setEmployeeSkills(employeeSkillsRes.data.employeeSkills || []);
       setDownloadFilename(response.data.downloadFilename || null);
     }
@@ -225,10 +225,10 @@ const UsersPage: React.FC = () => {
     
     setAddSkillLoading(true);
     try {
-      await axios.post(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/add-skill`, { skillName: newSkillName.trim() });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/employees/${selectedUser.id}/add-skill`, { skillName: newSkillName.trim() });
       handleShowSnackbar("Skill added successfully!", 'success');
       
-      const employeeSkillsRes = await axios.get(`http://localhost:5000/api/resumes/employees/${selectedUser.id}/skills`);
+      const employeeSkillsRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/employees/${selectedUser.id}/skills`);
       setEmployeeSkills(employeeSkillsRes.data.employeeSkills || []);
       
       setNewSkillName('');

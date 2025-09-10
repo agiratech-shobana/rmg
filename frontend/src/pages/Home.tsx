@@ -4,7 +4,7 @@ import Agiralogo from "../assets/agira-logo.png";
 
 const Home: React.FC = () => {
   const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:5000/auth/login";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login`;
   };
 
   return (

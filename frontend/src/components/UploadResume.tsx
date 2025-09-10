@@ -33,7 +33,7 @@ const UploadResume: React.FC = () => {
 
     try {
       // Step 1: Upload the file and get the extracted JSON from the server
-      const extractionResponse = await axios.post("http://localhost:5000/api/resumes/extract", formData, {
+      const extractionResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/resumes/extract`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -47,7 +47,7 @@ const UploadResume: React.FC = () => {
 
       // Step 2: Use the extracted data to generate the PDF on the server
       const pdfResponse = await axios.post(
-        "http://localhost:5000/api/resumes/resume-template",
+        `${import.meta.env.VITE_API_BASE_URL}/api/resumes/resume-template`,
         extractedData, // Send the entire extracted data object
         {
           responseType: "blob", // Important: tells axios to expect a file

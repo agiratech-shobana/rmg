@@ -206,7 +206,7 @@ const UserDetailsPanel: React.FC<UserDetailsPanelProps> = ({
               <Box mt={3}>
                 <Typography fontWeight="bold" variant="subtitle2">Formatted Resume Ready:</Typography>
                 <Button
-                  href={`http://localhost:5000/api/resumes/download/${downloadFilename}`}
+                  href={`${import.meta.env.VITE_API_BASE_URL}/api/resumes/download/${downloadFilename}`}
                   target="_blank"
                   variant="outlined"
                   color="secondary"

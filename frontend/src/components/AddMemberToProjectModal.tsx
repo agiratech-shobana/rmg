@@ -45,8 +45,8 @@ const AddMemberToProjectModal: React.FC<AddMemberToProjectModalProps> = ({ open,
     useEffect(() => {
         if (open) {
             setLoading(true);
-            const usersPromise = axios.get('http://localhost:5000/api/employees');
-            const rolesPromise = axios.get('http://localhost:5000/api/roles');
+            const usersPromise = axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/employees`);
+            const rolesPromise = axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/roles`);
             
             Promise.all([usersPromise, rolesPromise])
                 .then(([usersResponse, rolesResponse]) => {
@@ -132,7 +132,7 @@ const AddMemberToProjectModal: React.FC<AddMemberToProjectModalProps> = ({ open,
                 user_id: userId, 
                 role_ids: Array.from(selectedRoleIds) 
             };
-            return axios.post(`http://localhost:5000/api/projects/${projectId}/members`, payload);
+            return axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/projects/${projectId}/members`, payload);
         });
 
         try {

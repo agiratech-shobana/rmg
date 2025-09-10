@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selected, onSelect }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    window.location.href = "http://localhost:5000/auth/logout";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/logout`;
   };
   
   const menuItems = [

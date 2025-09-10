@@ -40,8 +40,8 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({ open, onClose, projec
     if (open) {
       setFetchLoading(true);
       Promise.all([
-        axios.get('http://localhost:5000/api/users'), 
-        axios.get('http://localhost:5000/api/roles')
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users`), 
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/roles`)
       ])
       .then(([usersResponse, rolesResponse]) => {
         setUsers(Array.isArray(usersResponse.data) ? usersResponse.data : usersResponse.data.users);
@@ -157,7 +157,7 @@ const AddMembersModal: React.FC<AddMembersModalProps> = ({ open, onClose, projec
     };
 
     try {
-      await axios.post('http://localhost:5000/api/projects', payload);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/projects`, payload);
       setSnackbarState({ open: true, message: 'Project and members added successfully!', severity: 'success' });
       handleClose(); // Close all modals and trigger re-fetch
     }
