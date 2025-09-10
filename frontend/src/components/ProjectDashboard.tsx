@@ -555,7 +555,7 @@ const ProjectDashboard: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4 }}>
+    <Container maxWidth="xl" sx={{ mt: 4,mb:4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Project Dashboard
@@ -571,19 +571,19 @@ const ProjectDashboard: React.FC = () => {
      
 
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        <Grid size={2}>
+        <Grid size={{xs:12,sm:6,md:4,lg:3}}>
           <Box p={2} border={1} borderColor="primary.main" borderRadius={2}>
             <Typography variant="h5">Total Projects</Typography>
             <Typography variant="h3" color="primary">{totalCount}</Typography>
           </Box>
         </Grid>
-        <Grid  size={2.3}>
+        <Grid  size={{xs:12,sm:6,md:4,lg:3}}>
           <Box p={2} border={1} borderColor="warning.main" borderRadius={2}>
             <Typography variant="h5">Ongoing Projects</Typography>
             <Typography variant="h3" color="warning">{ongoingCount}</Typography>
           </Box>
         </Grid>
-        <Grid  size={2.3}>
+        <Grid  size={{xs:12,sm:6,md:4,lg:3}}>
           <Box p={2} border={1} borderColor="success.main" borderRadius={2}>
             <Typography variant="h5">Finished Projects</Typography>
             <Typography variant="h3" color="success">{finishedCount}</Typography>
@@ -591,7 +591,7 @@ const ProjectDashboard: React.FC = () => {
         </Grid>
         
           <Grid>
-             <Box sx={{ mb: 4, mt: 2 }}>
+             <Box sx={{xs:12,sm:6,md:4,lg:3}}>
         <TextField
           // fullWidth
           style={{ width: '300px', marginLeft: '300px' ,marginTop:'40px', top: '70px'}}
