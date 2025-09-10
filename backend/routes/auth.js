@@ -26,8 +26,8 @@ router.get('/login', (req, res) => {
   cca.getAuthCodeUrl({
     scopes: SCOPES,
     redirectUri: REDIRECT_URI,
-    //  prompt: "select_account",
-    prompt:"none",
+     prompt: "select_account",
+    // prompt:"none",
   })
   .then(url => res.redirect(url))
   .catch(err => res.status(500).send(err.message));
